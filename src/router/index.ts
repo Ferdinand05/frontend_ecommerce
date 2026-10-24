@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/store/HomeView.vue";
 import { publicRoutes } from "./public.routes.ts";
 import { authRoutes } from "./auth.routes.ts";
 
@@ -8,10 +7,12 @@ const router = createRouter({
   routes: [
     ...publicRoutes,
     ...authRoutes,
-
   ],
 
-   scrollBehavior() {
+   scrollBehavior(to) {
+    if (to.hash) {
+      return { el: to.hash, behavior: 'smooth' }
+    }
     return { top: 0 }
   },
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setupInterceptors } from "./interceptors";
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -8,3 +9,5 @@ export const apiClient = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+setupInterceptors(apiClient);

@@ -12,6 +12,9 @@ function submit() {
 
 <template>
   <section class="w-full max-w-[460px] border border-[#e4ddda] bg-white p-7 text-[#201b1b] sm:p-10 lg:p-12" aria-labelledby="forgot-title">
+    <RouterLink class="mb-8 inline-flex rounded-md border border-[#e4ddda] bg-[#0F0F11] p-2" to="/" aria-label="Bread & Circus home">
+      <img class="h-16 w-auto object-contain" src="/img/logo.jfif" alt="Bread & Circus" />
+    </RouterLink>
     <h1 id="forgot-title" class="font-heading text-[clamp(32px,7vw,42px)] font-bold leading-none tracking-[-0.04em]">Lost the key?</h1>
     <p class="mb-7 mt-3.5 text-sm leading-6 text-[#625b59]">Enter the email linked to your account and we’ll send instructions to help you back in.</p>
     <form class="grid gap-2.5" @submit.prevent="submit">

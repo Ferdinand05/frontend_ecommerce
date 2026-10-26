@@ -76,14 +76,3 @@ Aplikasi akan mengkonsumsi API (Detail by ID/Slug) dengan struktur data berikut.
   }
 }
 ```
-
-## Docs
-
-Dokumen referensi, jangan digunakan semua, gunakan sesuai tujuan dan kegunaannya.
-TailwindCSS : <https://tailwindcss.com/docs/installation/using-vite>
-Shadcn vue : sudah connect MCP
-tanstack vue queries : <https://tanstack.com/query/latest/docs/framework/vue/guides/queries>
-tanstack vue mutations :<https://tanstack.com/query/latest/docs/framework/vue/guides/mutations>
-tanstack vue table : <https://tanstack.com/table/latest/docs/framework/vue/vue-table>
-icons : <https://lucide.dev/icons/>
-state management : <https://pinia.vuejs.org/core-concepts/> + plugin persisted state

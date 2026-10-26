@@ -144,7 +144,7 @@ function handleAddToCart(productId: number) {
       <div class="mx-auto grid max-w-360 items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[5fr_7fr] lg:gap-14 lg:px-10 lg:py-24">
         <div>
           <h1 class="font-heading text-[clamp(42px,6.5vw,84px)] font-extrabold leading-[0.95] tracking-tighter text-balance text-white">Bread for the body.<br /><span class="text-[#F44336]">Circus</span> for the ego.</h1>
-          <p class="mt-6 max-w-[46ch] text-base leading-7 text-white/80">Unisex essentials cut for the everyday, finished with the attitude of the main tent.</p>
+          <p class="mt-6 max-w-[58ch] text-base leading-7 text-white/80">Unisex essentials cut for the everyday, finished with the attitude of the main tent. Built to outlast the season, styled to steal the show long before the lights go down.</p>
           <div class="mt-9 flex flex-wrap gap-3.5">
             <RouterLink
               class="inline-flex min-h-12 items-center bg-[#F44336] px-6 text-sm font-bold text-white transition-colors hover:bg-[#d93429] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]"

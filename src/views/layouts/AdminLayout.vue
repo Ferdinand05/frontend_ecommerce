@@ -1,2 +1,85 @@
-<!-- base/parent template for admin layout -->
-<template></template>
+<script setup lang="ts">
+import { computed } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { LogOut, Menu, Store } from '@lucide/vue'
+import SidebarDashboard from '@/components/admin/SidebarDashboard.vue'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { useAuthStore } from '@/stores/auth'
+import { useLogoutMutation } from '@/api/features/auth/auth.queries'
+
+const route = useRoute()
+const authStore = useAuthStore()
+const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation()
+
+const pageTitle = computed(() => (route.meta.title as string | undefined) ?? 'Dashboard')
+const initials = computed(() => (authStore.user?.first_name || authStore.user?.email || 'AD').slice(0, 2).toUpperCase())
+</script>
+
+<template>
+  <div class="min-h-screen bg-background text-foreground">
+    <aside class="fixed inset-y-0 left-0 hidden w-64 border-r border-border lg:block">
+      <SidebarDashboard />
+    </aside>
+
+    <div class="lg:pl-64">
+      <header class="sticky top-0 z-30 flex min-h-16 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
+        <Sheet>
+          <SheetTrigger as-child>
+            <Button variant="outline" size="icon" class="lg:hidden" aria-label="Open admin navigation">
+              <Menu :size="19" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" class="w-72 border-border bg-background p-0">
+            <SheetTitle class="sr-only">Admin navigation</SheetTitle>
+            <SheetDescription class="sr-only">Navigate the Bread &amp; Circus admin dashboard</SheetDescription>
+            <SidebarDashboard />
+          </SheetContent>
+        </Sheet>
+
+        <div class="min-w-0">
+          <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">Command center</p>
+          <h1 class="truncate font-heading text-lg font-bold">{{ pageTitle }}</h1>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button variant="ghost" class="ml-auto gap-2 px-2" aria-label="Account menu">
+              <Avatar class="size-8">
+                <AvatarFallback class="bg-primary/15 text-xs font-bold text-primary">{{ initials }}</AvatarFallback>
+              </Avatar>
+              <span class="hidden text-sm font-semibold sm:inline">{{ authStore.user?.first_name ?? 'Admin' }}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-56">
+            <DropdownMenuLabel class="truncate">{{ authStore.user?.email ?? 'admin@breadcircus.co' }}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem as-child>
+              <RouterLink to="/">
+                <Store :size="16" aria-hidden="true" />
+                Back to storefront
+              </RouterLink>
+            </DropdownMenuItem>
+            <DropdownMenuItem variant="destructive" :disabled="isLoggingOut" @click="logout({ refresh_token: authStore.refreshToken ?? '' })">
+              <LogOut :size="16" aria-hidden="true" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </header>
+
+      <main class="px-4 py-6 sm:px-6 lg:px-8">
+        <RouterView />
+      </main>
+    </div>
+  </div>
+</template>

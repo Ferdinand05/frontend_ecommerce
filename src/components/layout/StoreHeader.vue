@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
 import { computed, ref } from "vue";
-import { ChevronDown, LogOut, Menu, ShoppingBag, UserRound, X } from "@lucide/vue";
+import { ChevronDown, LogOut, Menu, ShieldCheck, ShoppingBag, UserRound, X } from "@lucide/vue";
 import { useCart } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import { useLogoutMutation } from "@/api/features/auth/auth.queries";
@@ -11,6 +11,7 @@ const menuOpen = ref(false);
 const cartLabel = computed(() => `${totalItems.value} ${totalItems.value === 1 ? "item" : "items"} in bag`);
 
 const authStore = useAuthStore();
+const isAdmin = computed(() => authStore.isAuthenticated && authStore.user?.role?.name === "admin");
 
 const { mutate, isPending } = useLogoutMutation();
 const logout = () => {
@@ -55,6 +56,9 @@ const logout = () => {
           </summary>
           <div class="absolute right-0 top-full z-40 mt-1 min-w-56 border border-white/20 bg-[#0F0F11] py-2 shadow-lg">
             <RouterLink class="flex min-h-11 items-center px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" to="/account">Account details</RouterLink>
+            <RouterLink v-if="isAdmin" class="flex min-h-11 items-center gap-2 px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" to="/admin/dashboard">
+              <ShieldCheck :size="16" aria-hidden="true" />Admin dashboard
+            </RouterLink>
             <button class="flex min-h-11 w-full items-center gap-2 border-t border-white/15 px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" type="button" @click="logout">
               <LogOut :size="16" aria-hidden="true" /> Sign out
             </button>
@@ -85,6 +89,9 @@ const logout = () => {
         </summary>
         <div class="grid gap-1 border-l border-white/15 pl-3">
           <RouterLink class="min-h-11 py-3 text-sm font-semibold" to="/account" @click="menuOpen = false">Account details</RouterLink>
+          <RouterLink v-if="isAdmin" class="inline-flex min-h-11 items-center gap-2 py-3 text-sm font-semibold" to="/admin/dashboard" @click="menuOpen = false">
+            <ShieldCheck :size="17" aria-hidden="true" />Admin dashboard
+          </RouterLink>
           <button class="inline-flex min-h-11 items-center gap-2 py-3 text-left text-sm font-semibold" type="button" @click="logout">
             <LogOut :size="17" aria-hidden="true" />Sign out
           </button>

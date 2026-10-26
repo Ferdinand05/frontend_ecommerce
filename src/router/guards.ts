@@ -6,6 +6,7 @@ declare module "vue-router" {
   interface RouteMeta {
     title?: string;
     requiresAuth?: boolean;
+    requiresAdmin?: boolean;
     guestOnly?: boolean; // Disesuaikan menjadi guestOnly
   }
 }
@@ -25,9 +26,12 @@ export function setupGuards(router: Router) {
     // 2. Pengecekan Akses Halaman
     const isAuthRequired = to.matched.some((record) => record.meta.requiresAuth);
     const isGuestOnly = to.matched.some((record) => record.meta.guestOnly); // Pengecekan membaca guestOnly
+    const isAdminRequired = to.matched.some((record) => record.meta.requiresAdmin);
 
     if (isAuthRequired && !authStore.isAuthenticated) {
       return { name: "login", query: { redirect: to.fullPath } };
+    } else if (isAdminRequired && authStore.user?.role?.name !== "admin") {
+      return { name: "account" };
     } else if (isGuestOnly && authStore.isAuthenticated) {
       return { name: "home" }; // Sesuaikan dengan nama rute dashboard Anda
     } else {

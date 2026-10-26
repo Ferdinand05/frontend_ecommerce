@@ -1,11 +1,5 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { ChevronDown, LogOut } from '@lucide/vue'
-import { useAuthStore } from '@/stores/auth'
-import { useLogoutMutation } from '@/api/features/auth/auth.queries'
-
-const authStore = useAuthStore()
-const { mutate: logout } = useLogoutMutation()
 
 const socials = [
   {
@@ -41,26 +35,13 @@ const socials = [
           </nav>
         </div>
         <div>
-          <h2 class="font-heading text-sm font-bold uppercase tracking-[0.12em]">Your account</h2>
-          <details class="group relative mt-4">
-            <summary class="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 text-sm text-white/80 hover:text-white focus-visible:outline-2 focus-visible:outline-[#F44336]">
-              Profile <ChevronDown :size="16" class="transition-transform group-open:rotate-180" aria-hidden="true" />
-            </summary>
-            <div class="absolute bottom-full left-0 z-40 mb-1 min-w-56 border border-white/20 bg-[#0F0F11] py-2 shadow-lg">
-              <RouterLink class="flex min-h-11 items-center px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" to="/account">Account details</RouterLink>
-              <RouterLink class="flex min-h-11 items-center px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" to="/account/orders">Orders</RouterLink>
-              <RouterLink class="flex min-h-11 items-center px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" to="/account/order-history">Order history</RouterLink>
-              <template v-if="authStore.isAuthenticated">
-                <button class="flex min-h-11 w-full items-center gap-2 border-t border-white/15 px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" type="button" @click="logout()">
-                  <LogOut :size="16" aria-hidden="true" /> Sign out
-                </button>
-              </template>
-              <template v-else>
-                <RouterLink class="flex min-h-11 items-center border-t border-white/15 px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" to="/login">Sign in</RouterLink>
-                <RouterLink class="flex min-h-11 items-center px-4 text-sm text-white/80 hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" to="/register">Create account</RouterLink>
-              </template>
-            </div>
-          </details>
+          <h2 class="font-heading text-sm font-bold uppercase tracking-[0.12em]">Categories</h2>
+          <nav class="mt-4 grid gap-3 text-sm text-white/80" aria-label="Category links">
+            <RouterLink class="w-fit hover:text-white" :to="{ path: '/', hash: '#collection', query: { category: 'Tops' } }">Tops</RouterLink>
+            <RouterLink class="w-fit hover:text-white" :to="{ path: '/', hash: '#collection', query: { category: 'Outerwear' } }">Outerwear</RouterLink>
+            <RouterLink class="w-fit hover:text-white" :to="{ path: '/', hash: '#collection', query: { category: 'Bottoms' } }">Bottoms</RouterLink>
+            <RouterLink class="w-fit hover:text-white" to="/#collection">Browse all</RouterLink>
+          </nav>
         </div>
         <div>
           <h2 class="font-heading text-sm font-bold uppercase tracking-[0.12em]">The fine print</h2>

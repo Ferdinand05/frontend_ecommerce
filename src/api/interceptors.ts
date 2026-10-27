@@ -54,7 +54,7 @@ export function setupInterceptors(client: AxiosInstance) {
           }
 
           // Gunakan axios standar (bukan 'client' instance) agar tidak memicu interceptor ini sendiri
-          const baseURL = import.meta.env.VITE_API_URL;
+          const baseURL = import.meta.env.VITE_API_BASE_URL;
           const { data } = await axios.post(`${baseURL}/auth/refresh`, {
             refresh_token: authStore.refreshToken,
           });

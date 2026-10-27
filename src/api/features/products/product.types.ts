@@ -1,40 +1,3 @@
-// {
-//   "products": [
-//     {
-//       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-//       "category_id": "8de4c9fd-61a4-4c0b-bf88-0ed3a0fe3fa2",
-//       "name": "string",
-//       "slug": "string",
-//       "description": "string",
-//       "is_active": true,
-//       "category": {
-//         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-//         "name": "string",
-//         "slug": "string"
-//       },
-//       "images": [
-//         {
-//           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-//           "url": "http://example.com",
-//           "alt": "string",
-//           "sort_order": 0
-//         }
-//       ],
-//       "variants": [
-//         {
-//           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-//           "sku": "string",
-//           "name": "string",
-//           "price": 0,
-//           "is_active": true
-//         }
-//       ],
-//       "created_at": "2019-08-24T14:15:22Z",
-//       "updated_at": "2019-08-24T14:15:22Z"
-//     }
-//   ]
-// }
-
 import type { Category } from "../categories/category.types";
 
 export interface Image {
@@ -51,9 +14,11 @@ export interface Inventory {
 
 export interface Variant {
   id: string;
+  product_id: string;
   sku: string;
   name: string;
-  price: number;
+  /** Harga dikirim sebagai string numerik oleh API, contoh "120000". */
+  price: string;
   is_active: boolean;
   weight_grams: number;
   inventory?: Inventory;
@@ -65,21 +30,24 @@ export interface Product {
   category_id: string;
   name: string;
   slug: string;
-  price: string;
-  description?: string;
+  description: string;
   is_active: boolean;
   category: Category;
   images: Image[];
-  inventory: Inventory;
-  variants?: Variant[];
+  variants: Variant[];
   created_at: string;
+  updated_at: string;
+}
+
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  page_size: number;
 }
 
 export interface ProductsResponse {
   products: Product[];
-  total?: number;
-  page?: number;
-  page_size?: number;
+  meta: PaginationMeta;
 }
 
 export interface ProductDetailResponse {

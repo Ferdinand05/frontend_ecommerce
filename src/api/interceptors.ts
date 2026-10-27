@@ -33,6 +33,12 @@ export function setupInterceptors(client: AxiosInstance) {
       const authStore = useAuthStore();
 
       if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+        // Tanpa refresh token tidak ada sesi yang bisa dipulihkan, jadi error asli
+        // (mis. "invalid credentials" di form login) harus diteruskan ke pemanggil.
+        if (!authStore.refreshToken) {
+          return Promise.reject(error);
+        }
+
         if (isRefreshing) {
           // Jika sedang refresh, masukkan request ini ke antrean
           return new Promise((resolve, reject) => {

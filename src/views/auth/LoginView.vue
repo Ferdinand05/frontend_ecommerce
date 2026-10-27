@@ -57,12 +57,12 @@ const onSubmit = () => {
           minlength="8"
           placeholder="At least 8 characters"
         />
-        <Button :disabled="isPending" class="mt-3 min-h-12 bg-[#F44336] text-sm font-bold text-white hover:bg-[#d93429] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="submit">
+        <Button :disabled="isPending" class="mt-3 min-h-12 bg-ember text-sm font-bold text-white hover:bg-ember-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="submit">
           <span v-if="isPending">Memproses...</span>
           <span v-else>Enter the Stage</span>
         </Button>
 
-        <div v-if="isError" class="text-[#F44336] text-sm">
+        <div v-if="isError" class="text-ember text-sm" role="alert">
           {{ getApiErrorMessage(error) }}
         </div>
       </form>

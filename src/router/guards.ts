@@ -18,7 +18,7 @@ export function setupGuards(router: Router) {
     // 1. Dynamic Title (Anti-slop SEO)
     const baseTitle = "Bread & Circus";
     if (to.meta.title) {
-      document.title = `${to.meta.title} — ${baseTitle}`;
+      document.title = `${to.meta.title} | ${baseTitle}`;
     } else {
       document.title = baseTitle;
     }

@@ -1,8 +1,16 @@
 import { apiClient } from "@/api/client";
 import type { Product, ProductsResponse } from "./product.types";
 
-export async function getProducts(): Promise<ProductsResponse> {
-  const response = await apiClient.get<ProductsResponse>("/products");
+export interface ProductsParams {
+  page?: number;
+  page_size?: number;
+  q?: string;
+  category_id?: string;
+  sort?: string;
+}
+
+export async function getProducts(params: ProductsParams = {}): Promise<ProductsResponse> {
+  const response = await apiClient.get<ProductsResponse>("/products", { params });
   return response.data;
 }
 

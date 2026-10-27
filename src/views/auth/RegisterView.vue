@@ -32,7 +32,7 @@ const onSubmit = () => {
         <img class="h-16 w-auto object-contain" src="/img/logo.jfif" alt="Bread & Circus" />
       </RouterLink>
       <h1 id="register-title" class="font-heading text-[clamp(32px,7vw,42px)] font-bold leading-none tracking-[-0.04em]">Join the show.</h1>
-      <p class="mb-6 mt-3.5 text-sm leading-6 text-[#625b59]">Create an account for first access to drops, restocks, and member pricing.</p>
+      <p class="mb-6 mt-3.5 text-sm leading-6 text-[#625b59]">Create an account to review your orders and account details.</p>
       <form class="grid gap-2.5" @submit.prevent="onSubmit">
         <div class="mt-1 grid gap-2.5 sm:grid-cols-2">
           <div class="grid gap-2.5">
@@ -50,11 +50,11 @@ const onSubmit = () => {
         <input id="register-phone" v-model="form.phone" class="min-h-12 w-full border border-[#d9d2cd] bg-white px-3 text-sm text-[#201b1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="tel" autocomplete="tel" required placeholder="+62 812 3456 7890" />
         <label class="mt-1 text-[13px] font-semibold" for="register-password">Password</label>
         <input id="register-password" v-model="form.password" class="min-h-12 w-full border border-[#d9d2cd] bg-white px-3 text-sm text-[#201b1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters" />
-        <Button :disabled="isPending" class="mt-3 min-h-12 bg-[#F44336] text-sm font-bold text-white hover:bg-[#d93429] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="submit">
+        <Button :disabled="isPending" class="mt-3 min-h-12 bg-ember text-sm font-bold text-white hover:bg-ember-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="submit">
           <span v-if="isPending">Memproses...</span>
           <span v-else>Create account</span>
         </Button>
-        <p v-if="isError" class="text-[13px] leading-5 text-[#F44336]" role="alert">{{ getApiErrorMessage(error) }}</p>
+        <p v-if="isError" class="text-[13px] leading-5 text-ember" role="alert">{{ getApiErrorMessage(error) }}</p>
       </form>
       <p class="mt-6 text-center text-[13px] text-[#544c4c]">Already have an account? <RouterLink class="font-semibold text-[#5e1b9e] underline underline-offset-4" to="/login">Sign in</RouterLink></p>
     </div>

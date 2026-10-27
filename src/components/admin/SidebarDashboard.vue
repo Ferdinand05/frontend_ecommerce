@@ -48,36 +48,36 @@ interface NavGroup {
 }
 
 const topItems: NavItem[] = [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/admin/users', label: 'Users', icon: Users },
-  { to: '/admin/roles', label: 'Roles', icon: ShieldCheck },
+  { to: '/admin/dashboard', label: 'Dasbor', icon: LayoutDashboard },
+  { to: '/admin/users', label: 'Pengguna', icon: Users },
+  { to: '/admin/roles', label: 'Peran', icon: ShieldCheck },
 ]
 
 const groups: NavGroup[] = [
   {
     key: 'orders',
-    label: 'Orders',
+    label: 'Pesanan',
     icon: Receipt,
     items: [
-      { to: '/admin/orders', label: 'Order', icon: Receipt },
-      { to: '/admin/order-status-histories', label: 'Order histories', icon: ScrollText },
+      { to: '/admin/orders', label: 'Daftar pesanan', icon: Receipt },
+      { to: '/admin/order-status-histories', label: 'Riwayat status', icon: ScrollText },
     ],
   },
   {
     key: 'catalog',
-    label: 'Product',
+    label: 'Katalog',
     icon: Package,
     items: [
-      { to: '/admin/categories', label: 'Categories', icon: Tags },
-      { to: '/admin/products', label: 'Products', icon: Package },
+      { to: '/admin/categories', label: 'Kategori', icon: Tags },
+      { to: '/admin/products', label: 'Produk', icon: Package },
     ],
   },
 ]
 
 const bottomItems: NavItem[] = [
-  { to: '/admin/stock-movements', label: 'Stock movements', icon: Warehouse },
-  { to: '/admin/payments', label: 'Payments', icon: CreditCard },
-  { to: '/admin/shipments', label: 'Shipments', icon: Truck },
+  { to: '/admin/stock-movements', label: 'Perpindahan stok', icon: Warehouse },
+  { to: '/admin/payments', label: 'Pembayaran', icon: CreditCard },
+  { to: '/admin/shipments', label: 'Pengiriman', icon: Truck },
 ]
 
 const openGroups = ref<Record<string, boolean>>(
@@ -116,7 +116,7 @@ watch(
         <AvatarFallback class="bg-primary/15 text-xs font-bold text-primary">{{ initials }}</AvatarFallback>
       </Avatar>
       <p class="min-w-0 flex-1 truncate text-sm font-semibold" :title="authStore.user?.email ?? undefined">{{ adminName }}</p>
-      <Badge variant="outline" class="shrink-0 text-[10px] uppercase">{{ authStore.user?.role?.name ?? 'admin' }}</Badge>
+      <Badge variant="outline" class="shrink-0 text-[11px] uppercase">{{ authStore.user?.role?.name ?? 'admin' }}</Badge>
     </div>
 
     <nav class="flex-1 overflow-y-auto" aria-label="Admin navigation">
@@ -175,7 +175,7 @@ watch(
 
     <RouterLink class="flex min-h-10 items-center gap-2 px-3 text-xs font-semibold text-muted-foreground hover:text-foreground" to="/">
       <ScrollText :size="14" aria-hidden="true" />
-      Back to storefront
+      Kembali ke storefront
     </RouterLink>
   </div>
 </template>

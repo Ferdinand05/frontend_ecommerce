@@ -14,13 +14,13 @@ export interface Inventory {
 
 export interface Variant {
   id: string;
-  product_id: string;
+  product_id?: string;
   sku: string;
   name: string;
   /** Harga dikirim sebagai string numerik oleh API, contoh "120000". */
   price: string;
   is_active: boolean;
-  weight_grams: number;
+  weight_grams?: number;
   inventory?: Inventory;
   images?: Image[];
 }
@@ -32,7 +32,7 @@ export interface Product {
   slug: string;
   description: string;
   is_active: boolean;
-  category: Category;
+  category: Pick<Category, "id" | "name" | "slug">;
   images: Image[];
   variants: Variant[];
   created_at: string;

@@ -20,7 +20,7 @@ function submit() {
     <form class="grid gap-2.5" @submit.prevent="submit">
       <label class="text-[13px] font-semibold" for="forgot-email">Email address</label>
       <input id="forgot-email" v-model="email" class="min-h-12 w-full border border-[#d9d2cd] bg-white px-3 text-sm text-[#201b1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="email" autocomplete="email" required placeholder="name@example.com" />
-      <button class="mt-3 min-h-12 bg-[#F44336] text-sm font-bold text-white hover:bg-[#d93429] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="submit">Send reset link</button>
+      <button class="mt-3 min-h-12 bg-ember text-sm font-bold text-white hover:bg-ember-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="submit">Send reset link</button>
       <p v-if="message" class="mt-1 text-[13px] leading-5 text-[#544c4c]" role="status">{{ message }}</p>
     </form>
     <p class="mt-7 text-center text-[13px] text-[#544c4c]">Remembered it after all? <RouterLink class="font-semibold text-[#5e1b9e] underline underline-offset-4" to="/login">Back to sign in</RouterLink></p>

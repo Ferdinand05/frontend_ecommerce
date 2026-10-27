@@ -1,15 +1,19 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { Box, Clock3, UserRound } from '@lucide/vue'
-import { activeOrders } from '@/data/account'
+import { useMyOrdersQuery } from '@/api/features/account/account.queries'
 import StoreFooter from '@/components/layout/StoreFooter.vue'
 import StoreHeader from '@/components/layout/StoreHeader.vue'
 
 const route = useRoute()
 
+const { data } = useMyOrdersQuery()
+const activeOrderCount = computed(() => (data.value?.orders ?? []).filter((order) => ['PENDING', 'PAID', 'PROCESSING', 'SHIPPED'].includes(order.status)).length)
+
 const links = [
   { to: '/account', label: 'Account details', icon: UserRound, exact: true },
-  { to: '/account/orders', label: 'Orders', icon: Box, count: activeOrders.length },
+  { to: '/account/orders', label: 'Orders', icon: Box, count: activeOrderCount },
   { to: '/account/order-history', label: 'Order history', icon: Clock3 },
 ]
 
@@ -19,13 +23,13 @@ function isActive(link: (typeof links)[number]) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#0F0F11] font-sans text-[#F8F8F8] selection:bg-[#F44336] selection:text-white">
+  <div class="min-h-screen bg-[#0F0F11] font-sans text-[#F8F8F8] selection:bg-ember selection:text-white">
     <StoreHeader />
     <main class="mx-auto min-h-[70vh] max-w-300 px-4 py-12 text-white sm:px-6 lg:px-10 lg:py-16">
     <header class="border-b border-white/20 pb-7">
       <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#ff958e]">Your place backstage</p>
       <h1 class="mt-2 font-heading text-4xl font-extrabold tracking-tighter sm:text-5xl">Account<span class="text-[#F44336]">.</span></h1>
-      <p class="mt-3 max-w-[55ch] text-sm leading-6 text-white/75">Manage your details and keep track of every piece on its way to you.</p>
+      <p class="mt-3 max-w-[55ch] text-sm leading-6 text-white/75">Manage your details and follow every piece on its way to you.</p>
     </header>
 
     <div class="grid gap-10 py-8 md:grid-cols-[220px_1fr] lg:gap-16">

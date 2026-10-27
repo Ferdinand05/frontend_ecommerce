@@ -1,9 +1,11 @@
-import { useQuery } from "@tanstack/vue-query";
-import { getProducts } from "./product.api";
+import { keepPreviousData, useQuery } from "@tanstack/vue-query";
+import { getProducts, type ProductsParams } from "./product.api";
 
-export function useProductsQuery() {
-  return useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
-  });
+export function useProductsQuery(params: () => ProductsParams = () => ({})) {
+  return useQuery(() => ({
+    queryKey: ["products", params()] as const,
+    queryFn: () => getProducts(params()),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+  }));
 }

@@ -5,6 +5,7 @@ import { ChevronDown, LogOut, Menu, ShieldCheck, ShoppingBag, UserRound, X } fro
 import { useCart } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import { useLogoutMutation } from "@/api/features/auth/auth.queries";
+import { useCategoriesQuery } from "@/api/features/categories/category.queries";
 
 const { totalItems } = useCart();
 const menuOpen = ref(false);
@@ -12,6 +13,9 @@ const cartLabel = computed(() => `${totalItems.value} ${totalItems.value === 1 ?
 
 const authStore = useAuthStore();
 const isAdmin = computed(() => authStore.isAuthenticated && authStore.user?.role?.name === "admin");
+
+const { data: categoryData } = useCategoriesQuery();
+const categories = computed(() => categoryData.value ?? []);
 
 const { mutate, isPending } = useLogoutMutation();
 const logout = () => {
@@ -21,7 +25,7 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="bg-[#F44336] px-4 py-2 text-center text-xs font-bold tracking-[0.12em] text-white sm:text-sm">FEED YOUR STYLE. ENJOY THE SHOW.</div>
+  <div class="bg-ember px-4 py-2 text-center text-xs font-bold tracking-[0.12em] text-white sm:text-sm">FEED YOUR STYLE. ENJOY THE SHOW.</div>
   <header class="sticky top-0 z-30 border-b border-white/15 bg-[#0F0F11] text-white">
     <div class="mx-auto flex min-h-19 max-w-360 items-center gap-4 px-4 sm:px-6 lg:px-10">
       <button class="inline-flex size-11 items-center justify-center text-white md:hidden" type="button" :aria-label="menuOpen ? 'Close navigation' : 'Open navigation'" :aria-expanded="menuOpen" @click="menuOpen = !menuOpen">
@@ -29,22 +33,22 @@ const logout = () => {
       </button>
       <RouterLink class="shrink-0 font-heading text-[21px] font-extrabold tracking-[-0.06em] sm:text-2xl" to="/" aria-label="Bread & Circus home">BREAD <span class="text-[#F44336]">&</span> CIRCUS</RouterLink>
       <nav class="ml-7 hidden items-center gap-7 text-sm font-semibold md:flex" aria-label="Shop navigation">
-        <RouterLink class="transition-colors hover:text-[#F44336]" to="/#collection">Shop all</RouterLink>
-        <details class="group relative">
+        <RouterLink class="transition-colors hover:text-[#F44336]" to="/#collection">The collection</RouterLink>
+        <details v-if="categories.length" class="group relative">
           <summary class="flex min-h-11 cursor-pointer list-none items-center gap-2 transition-colors hover:text-[#F44336] focus-visible:outline-2 focus-visible:outline-[#F44336]">
             Categories <ChevronDown :size="16" class="transition-transform group-open:rotate-180" aria-hidden="true" />
           </summary>
           <div class="absolute left-0 top-full z-40 min-w-44 border border-white/20 bg-[#0F0F11] py-2 shadow-lg">
             <RouterLink
-              v-for="category in ['Tops', 'Outerwear', 'Bottoms']"
-              :key="category"
+              v-for="category in categories"
+              :key="category.id"
               class="block px-4 py-3 text-sm hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]"
-              :to="{ path: '/', hash: '#collection', query: { category } }"
-              >{{ category }}</RouterLink
+              :to="{ path: '/', hash: '#collection', query: { category: category.slug } }"
+              >{{ category.name }}</RouterLink
             >
           </div>
         </details>
-        <RouterLink class="transition-colors hover:text-[#F44336]" to="/#manifesto">Our manifesto</RouterLink>
+        <RouterLink class="transition-colors hover:text-[#F44336]" to="/#point-of-view">Point of view</RouterLink>
       </nav>
       <div class="ml-auto flex items-center gap-1 sm:gap-3">
         <RouterLink v-if="!authStore.isAuthenticated" class="hidden min-h-11 items-center px-2 text-sm font-semibold hover:text-[#F44336] focus-visible:outline-2 focus-visible:outline-[#F44336] sm:inline-flex" to="/login"
@@ -65,23 +69,25 @@ const logout = () => {
           </div>
         </details>
         <RouterLink
-          class="group relative inline-flex min-h-11 items-center gap-2 border border-white/40 px-3 text-sm font-bold transition-colors hover:border-[#F44336] hover:bg-[#F44336] focus-visible:outline-2 focus-visible:outline-[#F44336] sm:px-4"
+          class="group relative inline-flex min-h-11 items-center gap-2 border border-white/40 px-3 text-sm font-bold transition-colors hover:border-[#F44336] hover:bg-ember focus-visible:outline-2 focus-visible:outline-[#F44336] sm:px-4"
           to="/cart"
           :aria-label="cartLabel"
         >
           <ShoppingBag :size="19" aria-hidden="true" />
           <span class="hidden sm:inline">Bag</span>
-          <span class="grid min-w-5 place-items-center bg-[#F44336] px-1 text-xs leading-5 text-white group-hover:bg-[#0F0F11]">{{ totalItems }}</span>
+          <span class="grid min-w-5 place-items-center bg-ember px-1 text-xs leading-5 text-white group-hover:bg-[#0F0F11]">{{ totalItems }}</span>
         </RouterLink>
       </div>
     </div>
     <nav v-if="menuOpen" class="grid gap-1 border-t border-white/15 px-5 py-3 md:hidden" aria-label="Mobile shop navigation">
-      <RouterLink class="min-h-11 py-3 text-sm font-semibold" to="/#collection" @click="menuOpen = false">Shop all</RouterLink>
-      <p class="pt-3 text-xs font-bold uppercase tracking-[0.12em] text-white/65">Categories</p>
-      <RouterLink v-for="category in ['Tops', 'Outerwear', 'Bottoms']" :key="category" class="min-h-11 py-3 pl-3 text-sm font-semibold" :to="{ path: '/', hash: '#collection', query: { category } }" @click="menuOpen = false">{{
-        category
-      }}</RouterLink>
-      <RouterLink class="min-h-11 py-3 text-sm font-semibold" to="/#manifesto" @click="menuOpen = false">Our manifesto</RouterLink>
+      <RouterLink class="min-h-11 py-3 text-sm font-semibold" to="/#collection" @click="menuOpen = false">The collection</RouterLink>
+      <template v-if="categories.length">
+        <p class="pt-3 text-xs font-bold uppercase tracking-[0.12em] text-white/65">Categories</p>
+        <RouterLink v-for="category in categories" :key="category.id" class="min-h-11 py-3 pl-3 text-sm font-semibold" :to="{ path: '/', hash: '#collection', query: { category: category.slug } }" @click="menuOpen = false">{{
+          category.name
+        }}</RouterLink>
+      </template>
+      <RouterLink class="min-h-11 py-3 text-sm font-semibold" to="/#point-of-view" @click="menuOpen = false">Point of view</RouterLink>
       <RouterLink v-if="!authStore.isAuthenticated" class="min-h-11 py-3 text-sm font-semibold" to="/login" @click="menuOpen = false">Sign in</RouterLink>
       <details v-else class="group">
         <summary class="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 py-3 text-sm font-semibold">
@@ -89,7 +95,7 @@ const logout = () => {
         </summary>
         <div class="grid gap-1 border-l border-white/15 pl-3">
           <RouterLink class="min-h-11 py-3 text-sm font-semibold" to="/account" @click="menuOpen = false">Account details</RouterLink>
-          <RouterLink v-if="isAdmin" class="inline-flex min-h-11 items-center gap-2 py-3 text-sm font-semibold" to="/admin/dashboard" @click="menuOpen = false">
+          <RouterLink v-if="isAdmin" class="min-h-11 py-3 text-sm font-semibold" to="/admin/dashboard" @click="menuOpen = false">
             <ShieldCheck :size="17" aria-hidden="true" />Admin dashboard
           </RouterLink>
           <button class="inline-flex min-h-11 items-center gap-2 py-3 text-left text-sm font-semibold" type="button" @click="logout">

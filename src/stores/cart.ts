@@ -2,11 +2,22 @@ import { computed, ref } from 'vue'
 
 export interface CartItem {
   key: string
-  productId: number
+  productId: string
+  variantId: string
   name: string
   variantName: string
-  price: number
+  price: string
+  imageUrl: string
   qty: number
+}
+
+export interface AddToCartPayload {
+  productId: string
+  variantId: string
+  name: string
+  variantName: string
+  price: string
+  imageUrl: string
 }
 
 // ponytail: in-memory demo cart shared by header badge and cart page; add persistence when a backend exists
@@ -14,15 +25,13 @@ const items = ref<CartItem[]>([])
 
 export function useCart() {
   const totalItems = computed(() => items.value.reduce((sum, item) => sum + item.qty, 0))
-  const subtotal = computed(() => items.value.reduce((sum, item) => sum + item.qty * item.price, 0))
+  const subtotal = computed(() => items.value.reduce((sum, item) => sum + item.qty * Number(item.price), 0))
 
-  function add(product: { id: number; name: string; variants: { name: string; price: number }[] }) {
-    const variant = product.variants[0]
-    if (!variant) return
-    const key = `${product.id}:${variant.name}`
+  function add(payload: AddToCartPayload) {
+    const key = `${payload.productId}:${payload.variantId}`
     const existing = items.value.find((item) => item.key === key)
     if (existing) existing.qty += 1
-    else items.value.push({ key, productId: product.id, name: product.name, variantName: variant.name, price: variant.price, qty: 1 })
+    else items.value.push({ key, ...payload, qty: 1 })
   }
 
   function remove(key: string) {

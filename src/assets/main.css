@@ -11,6 +11,11 @@
   --font-syne: "Syne", sans-serif;
   --font-sans: var(--font-inter);
   --font-heading: var(--font-syne);
+  /* #F44336 with white text is 3.68:1, below WCAG AA. Ember is the same
+     brand red darkened to 5.62:1, used wherever red carries white body text.
+     #F44336 stays for red text and borders on the dark background (5.2:1). */
+  --color-ember: #c62828;
+  --color-ember-strong: #a8201a;
 }
 
 @theme inline {

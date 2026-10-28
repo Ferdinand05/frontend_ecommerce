@@ -32,9 +32,10 @@ There is **no lint or format script**. Don't invent one; `npm run type-check` is
 ## Data fetching vs state (hard rules from DOCS.md)
 
 - Server state → **TanStack Query** only. Never `ref` + `onMounted` for API data.
-- Client state (auth, cart) → **Pinia**; `pinia-plugin-persistedstate` is registered in `src/main.ts`.
+- Client state (auth) → **Pinia**; `pinia-plugin-persistedstate` is registered in `src/main.ts`.
+- The cart is **server state**: `GET /cart`, `POST /cart/items`, `POST /cart/items/{id}/increase|decrease`, `DELETE /cart/items/{id}`, `DELETE /cart` (all need a Bearer token). See `src/api/features/cart/`.
 - Query keys follow `["admin", "<area>", params]` for admin and `["<area>", params]` for public. Params are passed as a getter so the key tracks reactivity.
-- `src/stores/cart.ts` is a plain composable, not a Pinia store, and is intentionally in-memory only.
+- `GET /products` and `GET /products/{id}` return money as strings and `GET /products/{id}` wraps the product in a `{ product: ... }` envelope. The public catalogue uses `useInfiniteProductsQuery` (12 per page, `Load more` button); the product page uses `useProductQuery`.
 
 ## Router
 

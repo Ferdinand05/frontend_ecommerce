@@ -1,27 +1,58 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { ChevronDown, LogOut, Menu, ShieldCheck, ShoppingBag, UserRound, X } from "@lucide/vue";
-import { useCart } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import { useLogoutMutation } from "@/api/features/auth/auth.queries";
 import { useCategoriesQuery } from "@/api/features/categories/category.queries";
-
-const { totalItems } = useCart();
-const menuOpen = ref(false);
-const cartLabel = computed(() => `${totalItems.value} ${totalItems.value === 1 ? "item" : "items"} in bag`);
+import { useCartQuery } from "@/api/features/cart/cart.queries";
 
 const authStore = useAuthStore();
+const menuOpen = ref(false);
+const megaOpen = ref(false);
+const megaRoot = ref<HTMLElement | null>(null);
+
+const { data: cartData } = useCartQuery();
+const cartCount = computed(() => cartData.value?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0);
+const cartLabel = computed(() => `${cartCount.value} ${cartCount.value === 1 ? "item" : "items"} in bag`);
+
 const isAdmin = computed(() => authStore.isAuthenticated && authStore.user?.role?.name === "admin");
 
 const { data: categoryData } = useCategoriesQuery();
 const categories = computed(() => categoryData.value ?? []);
 
-const { mutate, isPending } = useLogoutMutation();
+// Tiga kolom supaya menu tetap rapi kalau kategorinya bertambah.
+const megaColumns = computed(() => {
+  const items = categories.value;
+  const columnSize = Math.ceil(items.length / 3);
+  return [items.slice(0, columnSize), items.slice(columnSize, columnSize * 2), items.slice(columnSize * 2)];
+});
+
+const { mutate } = useLogoutMutation();
 const logout = () => {
   mutate({ refresh_token: authStore.refreshToken ?? "" });
   menuOpen.value = false;
+  megaOpen.value = false;
 };
+
+function closeMegaOnOutside(event: MouseEvent) {
+  if (!megaOpen.value) return;
+  if (megaRoot.value && !megaRoot.value.contains(event.target as Node)) megaOpen.value = false;
+}
+
+function closeMegaOnEscape(event: KeyboardEvent) {
+  if (event.key === "Escape") megaOpen.value = false;
+}
+
+onMounted(() => {
+  document.addEventListener("click", closeMegaOnOutside);
+  document.addEventListener("keydown", closeMegaOnEscape);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", closeMegaOnOutside);
+  document.removeEventListener("keydown", closeMegaOnEscape);
+});
 </script>
 
 <template>
@@ -34,20 +65,42 @@ const logout = () => {
       <RouterLink class="shrink-0 font-heading text-[21px] font-extrabold tracking-[-0.06em] sm:text-2xl" to="/" aria-label="Bread & Circus home">BREAD <span class="text-[#F44336]">&</span> CIRCUS</RouterLink>
       <nav class="ml-7 hidden items-center gap-7 text-sm font-semibold md:flex" aria-label="Shop navigation">
         <RouterLink class="transition-colors hover:text-[#F44336]" to="/#collection">The collection</RouterLink>
-        <details v-if="categories.length" class="group relative">
-          <summary class="flex min-h-11 cursor-pointer list-none items-center gap-2 transition-colors hover:text-[#F44336] focus-visible:outline-2 focus-visible:outline-[#F44336]">
-            Categories <ChevronDown :size="16" class="transition-transform group-open:rotate-180" aria-hidden="true" />
-          </summary>
-          <div class="absolute left-0 top-full z-40 min-w-44 border border-white/20 bg-[#0F0F11] py-2 shadow-lg">
+        <div v-if="categories.length" ref="megaRoot" class="relative">
+          <button
+            class="flex min-h-11 cursor-pointer items-center gap-2 transition-colors hover:text-[#F44336] focus-visible:outline-2 focus-visible:outline-[#F44336]"
+            type="button"
+            :aria-expanded="megaOpen"
+            aria-haspopup="true"
+            @click="megaOpen = !megaOpen"
+          >
+            Categories <ChevronDown :size="16" class="transition-transform" :class="megaOpen ? 'rotate-180' : ''" aria-hidden="true" />
+          </button>
+          <div
+            v-if="megaOpen"
+            class="absolute left-0 top-full z-40 max-h-[70vh] w-[min(92vw,1180px)] overflow-y-auto border border-white/20 bg-[#0F0F11] p-6 shadow-xl"
+          >
+            <div class="grid gap-x-8 gap-y-6 sm:grid-cols-3">
+              <div v-for="(column, columnIndex) in megaColumns" :key="columnIndex" class="grid content-start gap-4">
+                <RouterLink
+                  v-for="category in column"
+                  :key="category.id"
+                  class="group block border-l-2 border-transparent pl-3 transition-colors hover:border-[#F44336] focus-visible:outline-2 focus-visible:outline-[#F44336]"
+                  :to="{ path: '/', hash: '#collection', query: { category: category.slug } }"
+                  @click="megaOpen = false"
+                >
+                  <span class="block font-heading text-sm font-bold text-white group-hover:text-[#ff958e]">{{ category.name }}</span>
+                  <span v-if="category.description" class="mt-1 line-clamp-2 block text-xs leading-5 text-white/60">{{ category.description }}</span>
+                </RouterLink>
+              </div>
+            </div>
             <RouterLink
-              v-for="category in categories"
-              :key="category.id"
-              class="block px-4 py-3 text-sm hover:bg-white/10 hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]"
-              :to="{ path: '/', hash: '#collection', query: { category: category.slug } }"
-              >{{ category.name }}</RouterLink
+              class="mt-6 inline-flex min-h-11 items-center border border-white/30 px-5 text-sm font-bold text-white transition-colors hover:border-[#F44336] hover:text-[#F44336]"
+              to="/#collection"
+              @click="megaOpen = false"
+              >Browse all pieces</RouterLink
             >
           </div>
-        </details>
+        </div>
         <RouterLink class="transition-colors hover:text-[#F44336]" to="/#point-of-view">Point of view</RouterLink>
       </nav>
       <div class="ml-auto flex items-center gap-1 sm:gap-3">
@@ -75,7 +128,7 @@ const logout = () => {
         >
           <ShoppingBag :size="19" aria-hidden="true" />
           <span class="hidden sm:inline">Bag</span>
-          <span class="grid min-w-5 place-items-center bg-ember px-1 text-xs leading-5 text-white group-hover:bg-[#0F0F11]">{{ totalItems }}</span>
+          <span v-if="authStore.isAuthenticated && cartCount" class="grid min-w-5 place-items-center bg-ember px-1 text-xs leading-5 text-white group-hover:bg-[#0F0F11]">{{ cartCount }}</span>
         </RouterLink>
       </div>
     </div>

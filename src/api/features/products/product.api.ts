@@ -1,5 +1,5 @@
 import { apiClient } from "@/api/client";
-import type { Product, ProductsResponse } from "./product.types";
+import type { Product, ProductDetailResponse, ProductsResponse } from "./product.types";
 
 export interface ProductsParams {
   page?: number;
@@ -15,7 +15,7 @@ export async function getProducts(params: ProductsParams = {}): Promise<Products
 }
 
 export async function getProductById(productId: string): Promise<Product> {
-  const response = await apiClient.get<Product>(`/products/${productId}`);
+  const response = await apiClient.get<ProductDetailResponse>(`/products/${productId}`);
 
-  return response.data;
+  return response.data.product;
 }

@@ -1,26 +1,39 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { RouterLink, useRoute } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import ProductCard from "@/components/store/ProductCard.vue";
-import { useCart } from "@/stores/cart";
-import { useProductsQuery } from "@/api/features/products/product.queries";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useInfiniteProductsQuery } from "@/api/features/products/product.queries";
 import { useCategoriesQuery } from "@/api/features/categories/category.queries";
 import type { Product } from "@/api/features/products/product.types";
 
+const PAGE_SIZE = 12;
+
 const route = useRoute();
+const router = useRouter();
 const activeCategory = ref<string>("all");
 
 const { data: categoryData } = useCategoriesQuery();
-const { data: productData, isPending: productsPending, isError: productsFailed, refetch: refetchProducts } = useProductsQuery(() => ({
-  page_size: 100,
+const categories = computed(() => categoryData.value ?? []);
+const activeCategoryId = computed(() =>
+  activeCategory.value === "all" ? undefined : categories.value.find((category) => category.slug === activeCategory.value)?.id,
+);
+
+const {
+  data: productData,
+  isPending: productsPending,
+  isError: productsFailed,
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+  refetch: refetchProducts,
+} = useInfiniteProductsQuery(() => ({
+  page_size: PAGE_SIZE,
+  ...(activeCategoryId.value ? { category_id: activeCategoryId.value } : {}),
 }));
 
-const categories = computed(() => categoryData.value ?? []);
-const products = computed<Product[]>(() => productData.value?.products ?? []);
-const totalProducts = computed(() => productData.value?.meta.total ?? 0);
-const visibleProducts = computed(() =>
-  activeCategory.value === "all" ? products.value : products.value.filter((product) => product.category.slug === activeCategory.value),
-);
+const products = computed<Product[]>(() => productData.value?.pages.flatMap((page) => page.products) ?? []);
+const totalProducts = computed(() => productData.value?.pages[0]?.meta.total ?? 0);
 
 // The category filter is driven by the URL so header and footer links land on the right shelf.
 watch(
@@ -31,6 +44,16 @@ watch(
   { immediate: true },
 );
 
+// The select writes back to the URL so a filtered shelf can be shared or reloaded.
+watch(activeCategory, (category) => {
+  const current = typeof route.query.category === "string" ? route.query.category : "all";
+  if (current === category) return;
+  const query = { ...route.query };
+  if (category === "all") delete query.category;
+  else query.category = category;
+  router.replace({ path: "/", hash: "#collection", query });
+});
+
 const activeCategoryName = computed(() => {
   if (activeCategory.value === "all") return "all pieces";
   return categories.value.find((category) => category.slug === activeCategory.value)?.name ?? activeCategory.value;
@@ -38,21 +61,6 @@ const activeCategoryName = computed(() => {
 
 // Marquee content: live category names, so the strip always matches the catalogue.
 const tickerItems = computed(() => ["Feed your style, enjoy the show.", ...categories.value.map((category) => category.name)]);
-
-const { add } = useCart();
-function handleAddToCart(payload: { productId: string; variantId: string }) {
-  const product = products.value.find((item) => item.id === payload.productId);
-  const variant = product?.variants.find((item) => item.id === payload.variantId);
-  if (!product || !variant) return;
-  add({
-    productId: product.id,
-    variantId: variant.id,
-    name: product.name,
-    variantName: variant.name,
-    price: variant.price,
-    imageUrl: product.images[0]?.url ?? "",
-  });
-}
 </script>
 
 <template>
@@ -103,36 +111,31 @@ function handleAddToCart(payload: { productId: string; variantId: string }) {
     </div>
 
     <section id="collection" class="mx-auto max-w-360 px-4 pb-10 pt-20 sm:px-6 lg:px-10">
-      <div class="mb-8 flex flex-wrap items-baseline justify-between gap-5">
+      <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
         <div>
           <h2 class="font-heading text-[clamp(28px,3.4vw,40px)] font-extrabold tracking-[-0.04em] text-white">The collection</h2>
           <p class="mt-2 text-sm text-white/70">
             <template v-if="productsPending">Loading the catalogue&hellip;</template>
             <template v-else-if="productsFailed">The catalogue could not be loaded.</template>
-            <template v-else>{{ visibleProducts.length }} {{ visibleProducts.length === 1 ? "piece" : "pieces" }} on this shelf, {{ totalProducts }} in the catalogue</template>
+            <template v-else>Showing {{ products.length }} of {{ totalProducts }} {{ totalProducts === 1 ? "piece" : "pieces" }}</template>
           </p>
         </div>
-        <div class="flex flex-wrap gap-2.5" role="group" aria-label="Filter products by category">
-          <button
-            class="min-h-10 border px-4 text-[13px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]"
-            :class="activeCategory === 'all' ? 'border-[#F8F8F8] bg-[#F8F8F8] text-[#0F0F11]' : 'border-white/25 text-white/80 hover:border-white hover:text-white'"
-            :aria-pressed="activeCategory === 'all'"
-            type="button"
-            @click="activeCategory = 'all'"
-          >
-            All
-          </button>
-          <button
-            v-for="category in categories"
-            :key="category.id"
-            class="min-h-10 border px-4 text-[13px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]"
-            :class="activeCategory === category.slug ? 'border-[#F8F8F8] bg-[#F8F8F8] text-[#0F0F11]' : 'border-white/25 text-white/80 hover:border-white hover:text-white'"
-            :aria-pressed="activeCategory === category.slug"
-            type="button"
-            @click="activeCategory = category.slug"
-          >
-            {{ category.name }}
-          </button>
+        <div class="grid w-full gap-2 sm:w-64">
+          <label class="text-xs font-semibold text-white/70" for="collection-category">Category</label>
+          <Select v-model="activeCategory">
+            <SelectTrigger
+              id="collection-category"
+              class="min-h-11 w-full border-white/25 bg-[#0F0F11] px-3 text-white focus-visible:border-white focus-visible:ring-0"
+            >
+              <SelectValue placeholder="All pieces" />
+            </SelectTrigger>
+            <SelectContent class="border-white/20 bg-[#17171A] text-white">
+              <SelectItem value="all" class="focus:bg-white/10 focus:text-white">All pieces</SelectItem>
+              <SelectItem v-for="category in categories" :key="category.id" :value="category.slug" class="focus:bg-white/10 focus:text-white">
+                {{ category.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -156,8 +159,8 @@ function handleAddToCart(payload: { productId: string; variantId: string }) {
         </button>
       </div>
 
-      <div v-else-if="visibleProducts.length" class="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <ProductCard v-for="product in visibleProducts" :key="product.id" :product="product" @add-to-cart="handleAddToCart" />
+      <div v-else-if="products.length" class="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <ProductCard v-for="product in products" :key="product.id" :product="product" />
       </div>
 
       <div v-else class="grid gap-4 border-y border-white/15 py-12">
@@ -172,6 +175,19 @@ function handleAddToCart(payload: { productId: string; variantId: string }) {
         >
           See all pieces
         </button>
+      </div>
+
+      <div v-if="!productsPending && !productsFailed && products.length" class="mt-12 flex justify-center">
+        <button
+          v-if="hasNextPage"
+          class="inline-flex min-h-12 items-center border border-white/40 px-8 text-sm font-bold text-white transition-colors hover:border-[#F44336] hover:text-[#F44336] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336] disabled:cursor-not-allowed disabled:opacity-60"
+          type="button"
+          :disabled="isFetchingNextPage"
+          @click="fetchNextPage()"
+        >
+          {{ isFetchingNextPage ? "Loading more pieces" : "Load more pieces" }}
+        </button>
+        <p v-else class="text-sm text-white/60">That is the whole catalogue for this shelf.</p>
       </div>
     </section>
 

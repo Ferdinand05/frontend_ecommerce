@@ -58,9 +58,6 @@ const activeCategoryName = computed(() => {
   if (activeCategory.value === "all") return "all pieces";
   return categories.value.find((category) => category.slug === activeCategory.value)?.name ?? activeCategory.value;
 });
-
-// Marquee content: live category names, so the strip always matches the catalogue.
-const tickerItems = computed(() => ["Feed your style, enjoy the show.", ...categories.value.map((category) => category.name)]);
 </script>
 
 <template>
@@ -68,12 +65,12 @@ const tickerItems = computed(() => ["Feed your style, enjoy the show.", ...categ
     <section class="relative overflow-hidden border-b border-white/15">
       <div class="mx-auto grid max-w-360 items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[5fr_7fr] lg:gap-14 lg:px-10 lg:py-24">
         <div>
-          <p class="font-heading text-xs font-bold uppercase tracking-[0.18em] text-[#F44336]">Editorial &amp; theatrical streetwear</p>
-          <h1 class="mt-5 font-heading text-[clamp(42px,6.5vw,84px)] font-extrabold leading-[0.95] tracking-tighter text-balance text-white">
+          <h1 class="font-heading text-[clamp(42px,6.5vw,84px)] font-extrabold leading-[0.95] tracking-tighter text-balance text-white">
             Feed your style.<br /><span class="text-[#F44336]">Enjoy the show.</span>
           </h1>
           <p class="mt-6 max-w-[58ch] text-base leading-7 text-white/80">
-            Unisex essentials meet streetwear with an editorial edge. Browse the current catalogue, with product photos and prices supplied by the store.
+            Editorial and theatrical streetwear, cut as unisex essentials built for the street. Browse the current catalogue, with
+            product photos and prices supplied by the store.
           </p>
           <div class="mt-9 flex flex-wrap gap-3.5">
             <RouterLink
@@ -102,13 +99,6 @@ const tickerItems = computed(() => ["Feed your style, enjoy the show.", ...categ
         </figure>
       </div>
     </section>
-
-    <!-- Marquee: the theatre front of the store, so it moves only as a deliberate identity cue. -->
-    <div class="overflow-hidden border-b border-white/15 bg-ember text-white" aria-hidden="true">
-      <div class="flex w-max whitespace-nowrap py-2.5 text-sm font-extrabold uppercase tracking-[0.12em] animate-[ticker-roll_28s_linear_infinite] motion-reduce:animate-none">
-        <span v-for="n in 2" :key="n">{{ tickerItems.join(" · ") }}&nbsp;·&nbsp;</span>
-      </div>
-    </div>
 
     <section id="collection" class="mx-auto max-w-360 px-4 pb-10 pt-20 sm:px-6 lg:px-10">
       <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
@@ -194,8 +184,7 @@ const tickerItems = computed(() => ["Feed your style, enjoy the show.", ...categ
     <section id="point-of-view" class="mx-auto max-w-360 px-4 py-20 sm:px-6 sm:py-28 lg:px-10">
       <div class="grid gap-8 border-t border-white/20 pt-6 md:grid-cols-[1fr_2fr] md:gap-12 lg:gap-20">
         <div>
-          <p class="font-heading text-xs font-bold uppercase tracking-[0.18em] text-[#F44336]">Our point of view</p>
-          <h2 class="mt-3 font-heading text-[clamp(32px,5vw,60px)] font-extrabold leading-[0.95] tracking-tighter text-white">The everyday,<br />with a little <span class="text-[#F44336]">spectacle.</span></h2>
+          <h2 class="font-heading text-[clamp(32px,5vw,60px)] font-extrabold leading-[0.95] tracking-tighter text-white">The everyday,<br />with a little <span class="text-[#F44336]">spectacle.</span></h2>
         </div>
         <div class="self-end">
           <p class="max-w-[58ch] font-heading text-[clamp(19px,2vw,26px)] font-semibold leading-normal tracking-[-0.02em] text-balance text-white/90">
@@ -206,34 +195,21 @@ const tickerItems = computed(() => ["Feed your style, enjoy the show.", ...categ
       </div>
       <div class="mt-12 grid gap-3 md:grid-cols-2 lg:mt-16">
         <article class="relative flex min-h-60 flex-col justify-between overflow-hidden bg-[#1b191c] p-7 text-white sm:min-h-72 sm:p-10">
-          <span class="font-heading text-xs font-bold uppercase tracking-[0.18em] text-white/65">01 &middot; The foundation</span>
+          <span class="font-heading text-xs font-bold uppercase tracking-[0.18em] text-white/65">The foundation</span>
           <div class="flex items-end justify-between gap-4">
             <h3 class="font-heading text-[clamp(48px,8vw,88px)] font-extrabold leading-[0.8] tracking-[-0.06em]">Bread<span class="text-[#F44336]">.</span></h3>
             <p class="pb-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/70 sm:text-sm">Function, made daily</p>
           </div>
-          <span class="pointer-events-none absolute -right-5 -top-12 font-heading text-[230px] font-extrabold leading-none text-white/[0.035]" aria-hidden="true">B</span>
         </article>
         <article class="relative flex min-h-60 flex-col justify-between overflow-hidden bg-linear-to-br from-[#673AB7] to-[#9C27B0] p-7 text-white sm:min-h-72 sm:p-10">
-          <span class="font-heading text-xs font-bold uppercase tracking-[0.18em] text-white/80">02 &middot; The flourish</span>
+          <span class="font-heading text-xs font-bold uppercase tracking-[0.18em] text-white/80">The flourish</span>
           <div class="flex items-end justify-between gap-4">
             <h3 class="font-heading text-[clamp(48px,8vw,88px)] font-extrabold leading-[0.8] tracking-[-0.06em]">Circus<span class="text-white/70">.</span></h3>
             <p class="pb-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/90 sm:text-sm">Expression, without apology</p>
           </div>
-          <span class="pointer-events-none absolute -right-5 -top-12 font-heading text-[230px] font-extrabold leading-none text-white/12" aria-hidden="true">C</span>
         </article>
       </div>
     </section>
   </div>
 </template>
 
-<style>
-/* plain (unscoped): Vue scoped CSS renames keyframes, which breaks the Tailwind animate-[ticker-roll] reference */
-@keyframes ticker-roll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-</style>

@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import { Camera, Globe, Video } from "@lucide/vue";
 
 // Tautan resmi belum tersedia, jadi channel ditampilkan sebagai label saja, bukan link.
-const socials = [
-  { name: "Instagram", icon: Camera },
-  { name: "TikTok", icon: Video },
-  { name: "Facebook", icon: Globe },
-];
+const socials = ["Instagram", "TikTok", "Facebook"];
 </script>
 
 <template>
@@ -32,9 +27,7 @@ const socials = [
         <div>
           <h2 class="font-heading text-sm font-bold uppercase tracking-[0.12em]">Social</h2>
           <ul class="mt-4 grid gap-3 text-sm text-white/80" aria-label="Social channels">
-            <li v-for="social in socials" :key="social.name" class="flex items-center gap-2.5">
-              <component :is="social.icon" :size="17" class="shrink-0 text-white/60" aria-hidden="true" />{{ social.name }}
-            </li>
+            <li v-for="social in socials" :key="social">{{ social }}</li>
           </ul>
           <p class="mt-4 text-xs leading-5 text-white/55">Official account links are not published yet.</p>
         </div>

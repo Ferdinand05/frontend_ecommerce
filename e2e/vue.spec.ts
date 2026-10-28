@@ -19,6 +19,17 @@ test('store home shows the live catalogue, loads more, and opens a product page'
   await expect(page.getByRole('heading', { name: 'Variants' })).toBeVisible()
 })
 
+test('the categories mega menu fits inside the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Categories' }).click()
+  const panel = page.getByRole('link', { name: 'Browse all pieces' }).locator('xpath=ancestor::div[contains(@class,"absolute")]')
+  const box = await panel.boundingBox()
+  expect(box).not.toBeNull()
+  expect(box!.x).toBeGreaterThanOrEqual(0)
+  expect(box!.x + box!.width).toBeLessThanOrEqual(1280)
+})
+
 test('store home explains a failed catalogue load', async ({ page }) => {
   await page.route('**/api/v1/products*', (route) => route.abort())
   await page.goto('/')

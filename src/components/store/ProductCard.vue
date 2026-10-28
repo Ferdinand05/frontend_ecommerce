@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
+import { ArrowRight } from "@lucide/vue";
 import { formatIDR } from "@/lib/format";
 import type { Product } from "@/api/features/products/product.types";
 
@@ -47,9 +48,18 @@ const coverImage = computed(() => {
       </h3>
       <p class="text-sm font-semibold tabular-nums text-white">{{ priceLabel }}</p>
       <p class="mt-1 line-clamp-2 text-sm leading-5 text-white/65">{{ product.description }}</p>
-      <p class="mt-3 text-xs text-white/80">
-        {{ activeVariants.length }} {{ activeVariants.length === 1 ? "variant" : "variants" }}
-      </p>
+      <div class="mt-3 flex items-center justify-between gap-3">
+        <p class="text-xs text-white/80">
+          {{ activeVariants.length }} {{ activeVariants.length === 1 ? "variant" : "variants" }}
+        </p>
+        <RouterLink
+          class="inline-flex min-h-10 items-center gap-1.5 border border-white/25 px-3 text-xs font-bold text-white/90 transition-colors hover:border-[#F44336] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]"
+          :to="{ path: `/product/${product.id}` }"
+          :aria-label="`See details for ${product.name}`"
+        >
+          Detail <ArrowRight :size="14" aria-hidden="true" />
+        </RouterLink>
+      </div>
     </div>
   </article>
 </template>

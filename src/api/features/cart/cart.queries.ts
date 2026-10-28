@@ -11,12 +11,12 @@ import {
 
 export function useCartQuery() {
   const authStore = useAuthStore();
-  return useQuery({
+  return useQuery(() => ({
     queryKey: ["cart"],
     queryFn: getCart,
     enabled: authStore.isAuthenticated,
     staleTime: 30_000,
-  });
+  }));
 }
 
 function useCartInvalidation() {

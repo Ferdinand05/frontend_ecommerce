@@ -1,5 +1,15 @@
 import { apiClient } from "@/api/client";
-import type { LoginRequest, RegisterRequest, RegisterResponse, AuthResponse, LogoutRequest, VerifyEmailRequest, VerifyEmailResponse } from "./auth.types";
+import type {
+  ForgotPasswordRequest,
+  LoginRequest,
+  RegisterRequest,
+  RegisterResponse,
+  AuthResponse,
+  LogoutRequest,
+  ResetPasswordRequest,
+  VerifyEmailRequest,
+  VerifyEmailResponse,
+} from "./auth.types";
 
 export const login = async (data: LoginRequest): Promise<AuthResponse> => {
   const response = await apiClient.post<AuthResponse>("/auth/login", data);
@@ -23,6 +33,16 @@ export const verifyEmail = async (data: VerifyEmailRequest): Promise<VerifyEmail
 
 export const resendVerificationEmail = async (email: string): Promise<void> => {
   await apiClient.post("/auth/email-verification/resend", { email });
+};
+
+/** Minta link reset password. Backend selalu balas 204, email tidak pernah dibocorkan. */
+export const forgotPassword = async (data: ForgotPasswordRequest): Promise<void> => {
+  await apiClient.post("/auth/password/forgot", data);
+};
+
+/** Terapkan password baru dari token reset yang dikirim lewat email. */
+export const resetPassword = async (data: ResetPasswordRequest): Promise<void> => {
+  await apiClient.post("/auth/password/reset", data);
 };
 
 // export const getProfile = async (): Promise<ProfileResponse> => {

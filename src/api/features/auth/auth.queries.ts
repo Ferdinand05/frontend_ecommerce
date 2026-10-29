@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/vue-query";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { login, logout, register, resendVerificationEmail, verifyEmail } from "./auth.api";
+import { forgotPassword, login, logout, register, resendVerificationEmail, resetPassword, verifyEmail } from "./auth.api";
 
 // Hook untuk Login
 export const useLoginMutation = () => {
@@ -65,6 +65,20 @@ export const useVerifyEmailMutation = () => {
 export const useResendVerificationMutation = () => {
   return useMutation({
     mutationFn: resendVerificationEmail,
+  });
+};
+
+/** Minta link reset password untuk sebuah alamat email. */
+export const useForgotPasswordMutation = () => {
+  return useMutation({
+    mutationFn: forgotPassword,
+  });
+};
+
+/** Simpan password baru memakai token dari query param. */
+export const useResetPasswordMutation = () => {
+  return useMutation({
+    mutationFn: resetPassword,
   });
 };
 

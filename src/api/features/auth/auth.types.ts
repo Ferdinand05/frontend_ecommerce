@@ -25,17 +25,6 @@ export interface RegisterRequest {
   phone: string;
 }
 
-export interface RegisterResponse {
-  message?: string;
-}
-
-export interface AuthResponse {
-  message: string;
-  access_token: string;
-  refresh_token: string;
-  user: AuthUser;
-}
-
 /**
  * Register hanya mengembalikan user yang dibuat, tanpa token. Akun baru
  * harus verifikasi email dulu sebelum bisa masuk.
@@ -48,6 +37,22 @@ export interface RegisterResponse {
   phone?: string;
   status?: string;
   email_verified_at?: string | null;
+}
+
+export interface AuthResponse {
+  message: string;
+  access_token: string;
+  refresh_token: string;
+  user: AuthUser;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  new_password: string;
 }
 
 // (Opsional) Jika ada endpoint untuk mengambil profil user saat ini

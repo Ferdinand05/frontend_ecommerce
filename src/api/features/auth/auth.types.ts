@@ -9,6 +9,14 @@ export interface LogoutRequest {
   refresh_token: string;
 }
 
+export interface VerifyEmailRequest {
+  token: string;
+}
+
+export interface VerifyEmailResponse {
+  message: string;
+}
+
 export interface RegisterRequest {
   email: string;
   password: string;

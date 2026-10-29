@@ -36,3 +36,17 @@ export function useCancelOrderMutation() {
     },
   });
 }
+
+/**
+ * Pembayaran ulang untuk order yang belum dibayar. Endpoint yang sama
+ * dengan checkout mengembalikan `checkout_url` Xendit, jadi tombol ini
+ * tinggal mengarahkan shopper ke halaman pembayaran.
+ */
+export function useRetryPaymentMutation() {
+  return useMutation({
+    mutationFn: async (orderId: string) => {
+      const response = await apiClient.post<{ checkout_url: string }>(`/me/orders/${orderId}/payment`);
+      return response.data;
+    },
+  });
+}

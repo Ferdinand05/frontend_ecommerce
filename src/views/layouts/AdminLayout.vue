@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { LogOut, Menu, Store } from '@lucide/vue'
 import SidebarDashboard from '@/components/admin/SidebarDashboard.vue'
@@ -23,6 +23,16 @@ const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation()
 
 const pageTitle = computed(() => (route.meta.title as string | undefined) ?? 'Dashboard')
 const initials = computed(() => (authStore.user?.first_name || authStore.user?.email || 'AD').slice(0, 2).toUpperCase())
+
+// Huruf admin punya scope sendiri. Kelasnya ditaruh di body supaya dialog,
+// dropdown, dan select yang di-portal ke body ikut mewarisi huruf yang sama.
+onMounted(() => {
+  document.body.classList.add('admin-scope')
+})
+
+onBeforeUnmount(() => {
+  document.body.classList.remove('admin-scope')
+})
 </script>
 
 <template>
@@ -47,8 +57,7 @@ const initials = computed(() => (authStore.user?.first_name || authStore.user?.e
         </Sheet>
 
         <div class="min-w-0">
-          <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">Pusat kendali</p>
-          <h1 class="truncate font-heading text-lg font-bold">{{ pageTitle }}</h1>
+          <h1 class="truncate text-lg font-semibold tracking-tight">{{ pageTitle }}</h1>
         </div>
 
         <DropdownMenu>

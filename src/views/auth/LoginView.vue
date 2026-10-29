@@ -2,7 +2,7 @@
 import { getApiErrorMessage } from "@/api/errors";
 import { useLoginMutation } from "@/api/features/auth/auth.queries";
 import Button from "@/components/ui/button/Button.vue";
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import { RouterLink } from "vue-router";
 
 const form = reactive({

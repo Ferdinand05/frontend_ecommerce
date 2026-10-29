@@ -1,19 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { getApiErrorMessage } from '@/api/errors'
-import { useCancelOrderMutation, useMyOrdersQuery } from '@/api/features/account/account.queries'
+import { computed } from 'vue'
+import { useMyOrdersQuery } from '@/api/features/account/account.queries'
 import OrderRow from '@/components/account/OrderRow.vue'
 
 const { data, isPending, isError, refetch } = useMyOrdersQuery()
-const { mutate: cancelOrder, isPending: isCancelling, error: cancelError } = useCancelOrderMutation()
-const cancellingId = ref<string | null>(null)
 
 const activeOrders = computed(() => (data.value?.orders ?? []).filter((order) => ['PENDING', 'PAID', 'PROCESSING', 'SHIPPED'].includes(order.status)))
-
-function handleCancel(orderId: string) {
-  cancellingId.value = orderId
-  cancelOrder(orderId, { onSettled: () => (cancellingId.value = null) })
-}
 </script>
 
 <template>
@@ -35,7 +27,5 @@ function handleCancel(orderId: string) {
     </div>
 
     <p v-else class="mt-6 border-y border-white/15 py-10 text-sm text-white/70">No active orders yet. Orders with a pending, paid, processing, or shipped status appear here.</p>
-
-    <p v-if="cancelError" class="mt-4 text-sm text-[#ff958e]">{{ getApiErrorMessage(cancelError) }}</p>
   </section>
 </template>

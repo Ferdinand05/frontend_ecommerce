@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -11,6 +11,12 @@
   --font-syne: "Syne", sans-serif;
   --font-sans: var(--font-inter);
   --font-heading: var(--font-syne);
+  /* Admin memakai keluarga huruf sendiri. Syne dan Inter milik storefront,
+     jadi panel admin tidak memakainya: angka rupiah dan ID pesanan butuh
+     huruf kerja (workhorse) yang xr-nya tinggi dan digitnya tegas, bukan
+     huruf display. IBM Plex Sans untuk teks, IBM Plex Mono untuk kode. */
+  --font-admin: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-admin-mono: "IBM Plex Mono", ui-monospace, monospace;
   /* #F44336 with white text is 3.68:1, below WCAG AA. Ember is the same
      brand red darkened to 5.62:1, used wherever red carries white body text.
      #F44336 stays for red text and borders on the dark background (5.2:1). */
@@ -134,11 +140,38 @@
   --sidebar-ring: oklch(0.6427 0.2153 28.81);
 }
 
+/* Panel admin memakai huruf sendiri supaya mudah dibaca dan tidak sama
+   dengan storefront. Diterapkan ke <body> supaya dialog dan dropdown
+   yang di-portal ke body ikut mewarisi huruf ini. */
+body.admin-scope {
+  --font-sans: var(--font-admin);
+  --font-syne: var(--font-admin);
+  --font-mono: var(--font-admin-mono);
+  font-family: var(--font-admin);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+    caret-color: var(--primary);
+  }
+  /* Scrollbar ikut palet, bukan default browser putih. */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0f0f11;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3a3739;
+    border: 3px solid #0f0f11;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #55504f;
   }
 }

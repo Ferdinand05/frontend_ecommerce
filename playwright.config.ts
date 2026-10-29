@@ -104,7 +104,7 @@ export default defineConfig({
      * Playwright will re-use the local server if there is already a dev-server running.
      */
     command: process.env.CI ? 'npm run preview' : 'npm run dev',
-    port: process.env.CI ? 4173 : 5173,
+    url: process.env.CI ? 'http://localhost:4173' : 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
   },
 })

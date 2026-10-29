@@ -60,7 +60,6 @@ const groups: NavGroup[] = [
     icon: Receipt,
     items: [
       { to: '/admin/orders', label: 'Daftar pesanan', icon: Receipt },
-      { to: '/admin/order-status-histories', label: 'Riwayat status', icon: ScrollText },
     ],
   },
   {
@@ -107,7 +106,7 @@ watch(
 
 <template>
   <div class="flex h-full flex-col gap-5 bg-sidebar p-4 text-sidebar-foreground">
-    <RouterLink class="px-2 font-heading text-lg font-extrabold tracking-[-0.06em]" to="/admin/dashboard" aria-label="Bread & Circus admin">
+    <RouterLink class="px-2 text-lg font-bold tracking-tight" to="/admin/dashboard" aria-label="Bread & Circus admin">
       BREAD <span class="text-primary">&</span> CIRCUS
     </RouterLink>
 
@@ -116,7 +115,7 @@ watch(
         <AvatarFallback class="bg-primary/15 text-xs font-bold text-primary">{{ initials }}</AvatarFallback>
       </Avatar>
       <p class="min-w-0 flex-1 truncate text-sm font-semibold" :title="authStore.user?.email ?? undefined">{{ adminName }}</p>
-      <Badge variant="outline" class="shrink-0 text-[11px] uppercase">{{ authStore.user?.role?.name ?? 'admin' }}</Badge>
+      <Badge variant="outline" class="shrink-0 text-xs">{{ authStore.user?.role?.name ?? 'admin' }}</Badge>
     </div>
 
     <nav class="flex-1 overflow-y-auto" aria-label="Admin navigation">
@@ -173,7 +172,7 @@ watch(
       </ul>
     </nav>
 
-    <RouterLink class="flex min-h-10 items-center gap-2 px-3 text-xs font-semibold text-muted-foreground hover:text-foreground" to="/">
+    <RouterLink class="flex min-h-10 items-center gap-2 px-3 text-sm font-medium text-muted-foreground hover:text-foreground" to="/">
       <ScrollText :size="14" aria-hidden="true" />
       Kembali ke storefront
     </RouterLink>

@@ -59,6 +59,40 @@ export function humanizeStatus(status: string): string {
     .join(" ");
 }
 
+/**
+ * Transisi status pesanan yang diterima server. Status lain ditolak dengan
+ * "invalid order status" atau "invalid order status transition".
+ */
+const ORDER_STATUS_TRANSITIONS: Record<string, string[]> = {
+  PENDING: ["PAID", "CANCELLED"],
+  PAID: ["PROCESSING", "CANCELLED"],
+  PROCESSING: ["SHIPPED", "CANCELLED"],
+  SHIPPED: [],
+  CANCELLED: [],
+};
+
+/**
+ * Status berikutnya yang boleh dipilih untuk sebuah pesanan.
+ * Kalau statusnya tidak dikenal, semua status valid Offered.
+ */
+export function nextOrderStatuses(status: string): string[] {
+  const current = status?.toUpperCase() ?? "";
+  if (current in ORDER_STATUS_TRANSITIONS) return ORDER_STATUS_TRANSITIONS[current] ?? [];
+  return ["PAID", "PROCESSING", "SHIPPED", "CANCELLED"];
+}
+
+/** Status pesanan yang bisa dipakai sebagai filter. */
+export const ORDER_STATUS_OPTIONS = ["PENDING", "PAID", "PROCESSING", "SHIPPED", "CANCELLED"];
+
+/**
+ * Label kondisi stok varian: habis, menipis, atau masih aman.
+ */
+export function stockState(available: number): { label: string; variant: StatusVariant } {
+  if (available <= 0) return { label: "Habis", variant: DANGER };
+  if (available <= 10) return { label: "Menipis", variant: INFO };
+  return { label: "Cukup", variant: NEUTRAL };
+}
+
 export const adminTableFeatures = tableFeatures({
   rowPaginationFeature,
   coreRowModel: createCoreRowModel(),

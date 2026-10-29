@@ -3,7 +3,6 @@ import DashboardView from "@/views/admin/DashboardView.vue";
 import UsersView from "@/views/admin/UsersView.vue";
 import RolesView from "@/views/admin/RolesView.vue";
 import OrdersView from "@/views/admin/OrdersView.vue";
-import OrderStatusHistoriesView from "@/views/admin/OrderStatusHistoriesView.vue";
 import CategoriesView from "@/views/admin/CategoriesView.vue";
 import ProductsView from "@/views/admin/ProductsView.vue";
 import StockMovementsView from "@/views/admin/StockMovementsView.vue";
@@ -25,12 +24,6 @@ export const adminRoutes: RouteRecordRaw[] = [
       { path: "users", name: "admin-users", component: UsersView, meta: { title: "Pengguna" } },
       { path: "roles", name: "admin-roles", component: RolesView, meta: { title: "Peran" } },
       { path: "orders", name: "admin-orders", component: OrdersView, meta: { title: "Pesanan" } },
-      {
-        path: "order-status-histories",
-        name: "admin-order-status-histories",
-        component: OrderStatusHistoriesView,
-        meta: { title: "Riwayat status pesanan" },
-      },
       { path: "categories", name: "admin-categories", component: CategoriesView, meta: { title: "Kategori" } },
       { path: "products", name: "admin-products", component: ProductsView, meta: { title: "Produk" } },
       {

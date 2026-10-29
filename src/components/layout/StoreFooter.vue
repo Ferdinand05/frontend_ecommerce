@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import { computed } from "vue";
-import { useCategoriesQuery } from "@/api/features/categories/category.queries";
 
-const { data: categoryData } = useCategoriesQuery();
-const categories = computed(() => categoryData.value ?? []);
+// Tautan resmi belum tersedia, jadi channel ditampilkan sebagai label saja, bukan link.
+const socials = ["Instagram", "TikTok", "Facebook"];
 </script>
 
 <template>
@@ -27,11 +25,11 @@ const categories = computed(() => categoryData.value ?? []);
           </nav>
         </div>
         <div>
-          <h2 class="font-heading text-sm font-bold uppercase tracking-[0.12em]">Categories</h2>
-          <nav class="mt-4 grid gap-3 text-sm text-white/80" aria-label="Category links">
-            <RouterLink v-for="category in categories" :key="category.id" class="w-fit hover:text-white" :to="{ path: '/', hash: '#collection', query: { category: category.slug } }">{{ category.name }}</RouterLink>
-            <RouterLink class="w-fit hover:text-white" to="/#collection">Browse all</RouterLink>
-          </nav>
+          <h2 class="font-heading text-sm font-bold uppercase tracking-[0.12em]">Social</h2>
+          <ul class="mt-4 grid gap-3 text-sm text-white/80" aria-label="Social channels">
+            <li v-for="social in socials" :key="social">{{ social }}</li>
+          </ul>
+          <p class="mt-4 text-xs leading-5 text-white/55">Official account links are not published yet.</p>
         </div>
       </div>
       <div class="flex flex-col gap-2 pt-5 text-xs text-white/70 sm:flex-row sm:items-center sm:justify-between">

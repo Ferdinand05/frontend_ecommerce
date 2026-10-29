@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/vue-query";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { login, logout, register } from "./auth.api";
+import { login, logout, register, resendVerificationEmail, verifyEmail } from "./auth.api";
 
 // Hook untuk Login
 export const useLoginMutation = () => {
@@ -30,15 +30,13 @@ export const useLoginMutation = () => {
 
 // Hook untuk Register
 export const useRegisterMutation = () => {
-  const authStore = useAuthStore();
   const router = useRouter();
 
   return useMutation({
     mutationFn: register,
-    onSuccess: (data) => {
-      // Langsung login-kan user setelah register sukses
-      authStore.setAuth(data.access_token, data.refresh_token, data.user);
-      router.push({ name: "account" });
+    onSuccess: () => {
+      // Register tidak mengembalikan token, akun harus verifikasi email dulu.
+      router.push({ name: "login", query: { verify: "sent" } });
     },
   });
 };
@@ -53,6 +51,20 @@ export const useLogoutMutation = () => {
       authStore.logout();
       router.push({ name: "login" });
     },
+  });
+};
+
+/** Verifikasi email dari token yang dikirim backend lewat email. */
+export const useVerifyEmailMutation = () => {
+  return useMutation({
+    mutationFn: verifyEmail,
+  });
+};
+
+/** Kirim ulang email verifikasi untuk akun yang belum terverifikasi. */
+export const useResendVerificationMutation = () => {
+  return useMutation({
+    mutationFn: resendVerificationEmail,
   });
 };
 

@@ -12,6 +12,7 @@ export interface AuthUser {
     name: string;
   };
   status?: string;
+  email_verified_at?: string | null;
 }
 
 export const useAuthStore = defineStore(

@@ -1,91 +1,42 @@
+# Bread & Circus
 
-```
-frontend_ecommerce_vue
-├─ .env
-├─ components.json
-├─ DESIGN.md
-├─ DOCS.md
-├─ e2e
-│  ├─ tsconfig.json
-│  └─ vue.spec.ts
-├─ env.d.ts
-├─ index.html
-├─ lib
-│  └─ utils.ts
-├─ package-lock.json
-├─ package.json
-├─ playwright.config.ts
-├─ public
-│  ├─ favicon.ico
-│  └─ img
-│     ├─ auth
-│     │  ├─ login.jfif
-│     │  └─ register.jfif
-│     ├─ hero.jfif
-│     └─ logo.jfif
-├─ README.md
-├─ scripts
-│  └─ hero-shot.mjs
-├─ skills-lock.json
-├─ src
-│  ├─ api
-│  │  ├─ client.ts
-│  │  ├─ errors.ts
-│  │  ├─ features
-│  │  │  └─ products
-│  │  │     ├─ product.api.ts
-│  │  │     ├─ product.queries.ts
-│  │  │     └─ product.types.ts
-│  │  └─ interceptors.ts
-│  ├─ App.vue
-│  ├─ assets
-│  │  ├─ logo.svg
-│  │  └─ main.css
-│  ├─ components
-│  │  ├─ layout
-│  │  │  ├─ StoreFooter.vue
-│  │  │  └─ StoreHeader.vue
-│  │  ├─ store
-│  │  │  └─ ProductCard.vue
-│  │  └─ __tests__
-│  │     └─ ProductCard.spec.ts
-│  ├─ data
-│  │  └─ account.ts
-│  ├─ main.ts
-│  ├─ router
-│  │  ├─ admin.routes.ts
-│  │  ├─ auth.routes.ts
-│  │  ├─ customer.routes.ts
-│  │  ├─ guards.ts
-│  │  ├─ index.ts
-│  │  └─ public.routes.ts
-│  ├─ stores
-│  │  ├─ auth.ts
-│  │  ├─ cart.ts
-│  │  └─ counter.ts
-│  └─ views
-│     ├─ account
-│     │  ├─ AccountDetailsView.vue
-│     │  ├─ OrderHistoryView.vue
-│     │  └─ OrdersView.vue
-│     ├─ admin
-│     ├─ auth
-│     │  ├─ ForgotPasswordView.vue
-│     │  ├─ LoginView.vue
-│     │  └─ RegisterView.vue
-│     ├─ layouts
-│     │  ├─ AccountLayout.vue
-│     │  ├─ AdminLayout.vue
-│     │  ├─ AuthLayout.vue
-│     │  └─ StoreLayout.vue
-│     └─ store
-│        ├─ CartView.vue
-│        └─ HomeView.vue
-├─ tsconfig.app.json
-├─ tsconfig.json
-├─ tsconfig.node.json
-├─ tsconfig.vitest.json
-├─ vite.config.ts
-└─ vitest.config.ts
+Bread & Circus is an online fashion storefront with customer account and order tools, plus an admin area for managing the shop. This repository contains the Vue frontend. It connects to a separate Go backend for authentication, product data, cart, checkout, payments, and order operations.
 
+## What it does
+
+- Browse products and view product details.
+- Register, sign in, verify email, and reset a forgotten password.
+- Manage a customer account, cart, checkout, and orders.
+- Open an admin area for store and order management.
+
+## Tech stack
+
+- Vue 3, TypeScript, and Vite
+- Vue Router for navigation
+- Pinia for client-side authentication state
+- TanStack Vue Query for backend data and mutations
+- Axios for API requests
+- Tailwind CSS v4 and shadcn-vue components
+- Vitest for unit tests and Playwright for end-to-end tests
+
+## Run locally
+
+Requirements: Node.js `^22.18.0` or `>=24.12.0`.
+
+```bash
+npm install
+npm run dev
 ```
+
+The frontend reads `VITE_API_BASE_URL` from `.env` to connect to the backend. Set it to a reachable API v1 URL before running the app. The backend is maintained separately from this repository.
+
+## Checks
+
+```bash
+npm run type-check
+npm run test:unit
+npm run test:e2e
+npm run build
+```
+
+See [`docs/api-docs.yaml`](docs/api-docs.yaml) for the API contract and [`DESIGN.md`](DESIGN.md) for the storefront design direction.

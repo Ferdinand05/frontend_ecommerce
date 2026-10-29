@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { getApiErrorMessage } from '@/api/errors'
+import { useForgotPasswordMutation } from '@/api/features/auth/auth.queries'
 
 const email = ref('')
-const message = ref('')
+const sent = ref(false)
+const { mutate: requestReset, isPending, isError, error } = useForgotPasswordMutation()
 
 function submit() {
-  message.value = 'We could not send a reset link. Please try again shortly.'
+  sent.value = false
+  requestReset(
+    { email: email.value.trim() },
+    {
+      onSuccess: () => {
+        sent.value = true
+      },
+    },
+  )
 }
 </script>
 
@@ -17,11 +28,18 @@ function submit() {
     </RouterLink>
     <h1 id="forgot-title" class="font-heading text-[clamp(32px,7vw,42px)] font-bold leading-none tracking-[-0.04em]">Lost the key?</h1>
     <p class="mb-7 mt-3.5 text-sm leading-6 text-[#625b59]">Enter the email linked to your account and we’ll send instructions to help you back in.</p>
-    <form class="grid gap-2.5" @submit.prevent="submit">
+
+    <div v-if="sent" class="border-l-2 border-ember pl-3" role="status">
+      <p class="text-sm leading-6 text-[#544c4c]">If that email is registered, a reset link is on its way. Check your inbox.</p>
+    </div>
+
+    <form v-else class="grid gap-2.5" @submit.prevent="submit">
       <label class="text-[13px] font-semibold" for="forgot-email">Email address</label>
       <input id="forgot-email" v-model="email" class="min-h-12 w-full border border-[#d9d2cd] bg-white px-3 text-sm text-[#201b1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="email" autocomplete="email" required placeholder="name@example.com" />
-      <button class="mt-3 min-h-12 bg-ember text-sm font-bold text-white hover:bg-ember-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]" type="submit">Send reset link</button>
-      <p v-if="message" class="mt-1 text-[13px] leading-5 text-[#544c4c]" role="status">{{ message }}</p>
+      <button class="mt-3 min-h-12 bg-ember text-sm font-bold text-white hover:bg-ember-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336] disabled:cursor-not-allowed disabled:opacity-60" type="submit" :disabled="isPending">
+        {{ isPending ? 'Sending...' : 'Send reset link' }}
+      </button>
+      <p v-if="isError" class="mt-1 text-[13px] leading-5 text-ember" role="alert">{{ getApiErrorMessage(error) }}</p>
     </form>
     <p class="mt-7 text-center text-[13px] text-[#544c4c]">Remembered it after all? <RouterLink class="font-semibold text-[#5e1b9e] underline underline-offset-4" to="/login">Back to sign in</RouterLink></p>
   </section>

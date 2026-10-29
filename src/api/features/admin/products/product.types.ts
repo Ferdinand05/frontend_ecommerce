@@ -38,7 +38,7 @@ export interface AdminProductVariant {
   price: string;
   is_active: boolean;
   weight_grams: number;
-  inventory: AdminInventory;
+  inventory: AdminInventory | null;
   images: AdminImage[];
 }
 
@@ -58,4 +58,11 @@ export interface AdminProductsParams {
   sort?: ProductSort;
   page?: number;
   page_size?: number;
+}
+
+export interface ProductVariantRequest {
+  sku: string;
+  name: string;
+  price: string;
+  weight_grams: number;
 }

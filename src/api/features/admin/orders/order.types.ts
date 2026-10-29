@@ -66,11 +66,6 @@ export interface AdminOrderDetailResponse {
   order: AdminOrderDetail;
 }
 
-export interface AdminOrderHistoriesResponse {
-  order_id: string;
-  histories: AdminOrderStatusHistory[];
-}
-
 export interface AdminOrdersParams {
   status?: string;
   order_number?: string;

@@ -68,3 +68,89 @@ test('a signed in shopper can add a variant to the server cart', async ({ page }
   const clearBag = page.getByRole('button', { name: 'Clear bag' })
   if (await clearBag.isVisible()) await clearBag.click()
 })
+
+test('a shopper can pick a courier and reach the payment handoff', async ({ page }) => {
+  test.setTimeout(120_000)
+  await page.goto('/login')
+  await page.getByLabel('Email address').fill('admin@ecommerce.test')
+  await page.getByLabel('Password').fill('admin123')
+  await page.getByRole('button', { name: 'Enter the Stage' }).click()
+  await expect(page).toHaveURL(/\/account/)
+
+  await page.goto('/')
+  const products = page.locator('#collection article')
+  await expect(products.first()).toBeVisible({ timeout: 20_000 })
+  await products.first().getByRole('link', { name: /View / }).click()
+  const addToCart = page.getByRole('button', { name: /^Add .* to cart$/ }).first()
+  await expect(addToCart).toBeVisible()
+  await addToCart.click()
+
+  await page.goto('/checkout')
+  await expect(page.getByRole('heading', { name: 'Checkout.' })).toBeVisible({ timeout: 20_000 })
+
+  await page.getByLabel('Full name').fill('Ferdinand Tester')
+  await page.getByLabel('Phone number').fill('081234567890')
+  await page.getByLabel('Street address').fill('Jalan Braga No. 21, Lantai 2')
+
+  const areaInput = page.getByLabel('Delivery area')
+  await areaInput.click()
+  await areaInput.fill('Bandung')
+  const firstArea = page.getByRole('option').first()
+  await expect(firstArea).toBeVisible({ timeout: 20_000 })
+  await firstArea.click()
+
+  await expect(page.getByLabel('City')).not.toHaveValue('')
+  await page.getByRole('button', { name: 'Continue to shipping' }).click()
+
+  const courier = page.getByRole('radio').first()
+  await expect(courier).toBeVisible({ timeout: 20_000 })
+  await courier.click()
+
+  const total = page.locator('#checkout-summary-total')
+  await expect(total).toContainText('Rp')
+
+  // The order request is intercepted so the shared server keeps no test order.
+  const orderRequests: Record<string, unknown>[] = [];
+  await page.route('**/api/v1/me/orders', async (route) => {
+    if (route.request().method() !== 'POST') return route.fallback();
+    orderRequests.push(route.request().postDataJSON());
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ order: { id: '11111111-2222-3333-4444-555555555555' } }),
+    });
+  });
+  await page.route('**/api/v1/me/orders/*/payment', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        payment_id: 'pay-1',
+        order_id: '11111111-2222-3333-4444-555555555555',
+        status: 'PENDING',
+        amount: '413000',
+        currency: 'IDR',
+        checkout_url: 'https://checkout-staging.xendit.co/web/test',
+        expires_at: null,
+      }),
+    });
+  });
+  await page.route('https://checkout-staging.xendit.co/**', (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: '<title>Xendit</title><p>stub payment page</p>' }),
+  );
+
+  await page.getByRole('button', { name: /Pay now/ }).click()
+  await expect(page).toHaveURL(/xendit\.co/, { timeout: 20_000 })
+
+  expect(orderRequests).toHaveLength(1)
+  expect(orderRequests[0]).toMatchObject({
+    recipient_name: 'Ferdinand Tester',
+    phone: '081234567890',
+    address: 'Jalan Braga No. 21, Lantai 2',
+  })
+  expect((orderRequests[0] as { courier_code: string }).courier_code).not.toBe('')
+
+  await page.goto('/cart')
+  const clearBag = page.getByRole('button', { name: 'Clear bag' })
+  if (await clearBag.isVisible()) await clearBag.click()
+})

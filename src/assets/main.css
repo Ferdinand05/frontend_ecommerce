@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -145,6 +145,7 @@
    yang di-portal ke body ikut mewarisi huruf ini. */
 body.admin-scope {
   --font-sans: var(--font-admin);
+  --font-syne: var(--font-admin);
   --font-mono: var(--font-admin-mono);
   font-family: var(--font-admin);
 }

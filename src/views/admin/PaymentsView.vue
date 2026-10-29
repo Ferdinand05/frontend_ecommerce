@@ -50,7 +50,7 @@ const columns = [
   <div class="grid min-w-0 gap-4">
     <TableFilterBar label="Filter pembayaran">
       <div class="grid gap-2 sm:w-48">
-        <span class="text-xs font-semibold text-muted-foreground">Status</span>
+        <span class="text-sm font-medium text-muted-foreground">Status</span>
         <Select v-model="status">
           <SelectTrigger>
             <SelectValue placeholder="Semua status" />
@@ -82,7 +82,7 @@ const columns = [
     >
       <template #cell="{ columnId, row }">
         <template v-if="columnId === 'external_id'">
-          <span class="font-mono text-xs">{{ row.original.external_id }}</span>
+          <span class="font-mono text-sm">{{ row.original.external_id }}</span>
         </template>
         <template v-else-if="columnId === 'provider'">
           <span class="text-sm">{{ row.original.provider }}</span>

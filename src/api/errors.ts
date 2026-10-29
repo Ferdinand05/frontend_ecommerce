@@ -5,6 +5,12 @@ interface ApiErrorBody {
   message?: string;
 }
 
+/** Kode status HTTP dari error axios, atau undefined kalau errornya bukan dari API. */
+export function getApiErrorStatus(error: unknown): number | undefined {
+  if (axios.isAxiosError(error)) return error.response?.status;
+  return undefined;
+}
+
 export function getApiErrorMessage(error: unknown, fallback = "Terjadi kesalahan. Silakan coba lagi."): string {
   if (axios.isAxiosError<ApiErrorBody>(error)) {
     if (!error.response) {

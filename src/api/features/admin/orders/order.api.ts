@@ -1,10 +1,14 @@
 import { apiClient } from "@/api/client";
 import type {
   AdminOrderDetailResponse,
-  AdminOrderHistoriesResponse,
   AdminOrdersParams,
   AdminOrdersResponse,
 } from "./order.types";
+
+export interface UpdateOrderStatusRequest {
+  status: string;
+  note?: string | null;
+}
 
 export async function getAdminOrders(params: AdminOrdersParams = {}): Promise<AdminOrdersResponse> {
   const response = await apiClient.get<AdminOrdersResponse>("/admin/orders", { params });
@@ -16,7 +20,13 @@ export async function getAdminOrder(orderId: string): Promise<AdminOrderDetailRe
   return response.data;
 }
 
-export async function getAdminOrderHistories(orderId: string): Promise<AdminOrderHistoriesResponse> {
-  const response = await apiClient.get<AdminOrderHistoriesResponse>(`/admin/orders/${orderId}/histories`);
+export async function updateAdminOrderStatus(
+  orderId: string,
+  payload: UpdateOrderStatusRequest,
+): Promise<AdminOrderDetailResponse> {
+  const response = await apiClient.patch<AdminOrderDetailResponse>(
+    `/admin/orders/${orderId}/status`,
+    payload,
+  );
   return response.data;
 }

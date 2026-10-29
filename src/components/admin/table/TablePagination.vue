@@ -26,13 +26,13 @@ function go(delta: number) {
 
 <template>
   <div class="flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-    <p class="text-xs text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Menampilkan <span class="tabular-nums text-foreground">{{ formatNumber(from) }}</span> sampai
       <span class="tabular-nums text-foreground">{{ formatNumber(to) }}</span> dari
       <span class="tabular-nums text-foreground">{{ formatNumber(rowCount) }}</span> data
     </p>
     <div class="flex items-center gap-2">
-      <span class="text-xs text-muted-foreground">
+      <span class="text-sm text-muted-foreground">
         Halaman <span class="tabular-nums text-foreground">{{ pageIndex + 1 }}</span> dari
         <span class="tabular-nums text-foreground">{{ pageCount }}</span>
       </span>

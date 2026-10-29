@@ -3,13 +3,7 @@ import { computed } from "vue";
 import { RouterLink } from "vue-router";
 import { Minus, Plus, Trash2 } from "@lucide/vue";
 import { getApiErrorMessage } from "@/api/errors";
-import {
-  useCartQuery,
-  useClearCartMutation,
-  useDecreaseCartItemMutation,
-  useIncreaseCartItemMutation,
-  useRemoveCartItemMutation,
-} from "@/api/features/cart/cart.queries";
+import { useCartQuery, useClearCartMutation, useDecreaseCartItemMutation, useIncreaseCartItemMutation, useRemoveCartItemMutation } from "@/api/features/cart/cart.queries";
 import { useAuthStore } from "@/stores/auth";
 import { formatIDR } from "@/lib/format";
 
@@ -26,22 +20,18 @@ const mutationError = computed(() => increaseError.value ?? decreaseError.value 
 </script>
 
 <template>
-  <section class="mx-auto min-h-[65vh] max-w-[1200px] px-4 py-14 text-white sm:px-6 lg:px-10 lg:py-20" aria-labelledby="cart-title">
+  <section class="mx-auto min-h-[65vh] max-w-300 px-4 py-14 text-white sm:px-6 lg:px-10 lg:py-20" aria-labelledby="cart-title">
     <div class="flex flex-wrap items-end justify-between gap-4 border-b border-white/20 pb-6">
       <div>
         <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#ff958e]">Your picks</p>
-        <h1 id="cart-title" class="mt-2 font-heading text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">Your bag<span class="text-[#F44336]">.</span></h1>
+        <h1 id="cart-title" class="mt-2 font-heading text-4xl font-extrabold tracking-tighter sm:text-5xl">Your bag<span class="text-[#F44336]">.</span></h1>
       </div>
-      <p v-if="authStore.isAuthenticated && !isPending && !isError" class="text-sm text-white/80">
-        {{ items.length }} {{ items.length === 1 ? "piece" : "pieces" }} selected
-      </p>
+      <p v-if="authStore.isAuthenticated && !isPending && !isError" class="text-sm text-white/80">{{ items.length }} {{ items.length === 1 ? "piece" : "pieces" }} selected</p>
     </div>
 
     <div v-if="!authStore.isAuthenticated" class="grid justify-items-start gap-4 py-16">
       <p class="font-heading text-2xl font-bold">Your bag lives on the account.</p>
-      <p class="max-w-md text-sm leading-6 text-white/75">
-        Sign in and the pieces you pick are kept on the store server, so the bag follows you to any device.
-      </p>
+      <p class="max-w-md text-sm leading-6 text-white/75">Sign in and the pieces you pick are kept on the store server, so the bag follows you to any device.</p>
       <RouterLink
         class="mt-2 inline-flex min-h-12 items-center bg-ember px-5 text-sm font-bold text-white hover:bg-ember-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]"
         :to="{ path: '/login', query: { redirect: '/cart' } }"
@@ -50,8 +40,8 @@ const mutationError = computed(() => increaseError.value ?? decreaseError.value 
     </div>
 
     <div v-else-if="isPending" class="grid gap-4 py-12" aria-live="polite">
-      <div class="h-24 w-full animate-pulse bg-white/10 motion-reduce:animate-none"></div>
-      <div class="h-24 w-full animate-pulse bg-white/10 motion-reduce:animate-none"></div>
+      <div class="h-24 w-full animate-pulse bg-white/10 motion-reduce:animate-none" />
+      <div class="h-24 w-full animate-pulse bg-white/10 motion-reduce:animate-none" />
     </div>
 
     <div v-else-if="isError" class="grid gap-4 border-y border-white/15 py-12">
@@ -71,24 +61,22 @@ const mutationError = computed(() => increaseError.value ?? decreaseError.value 
 
     <div v-else-if="items.length" class="grid gap-10 py-8 lg:grid-cols-[1fr_320px]">
       <div>
-        <p v-if="mutationError" class="mb-4 text-sm text-[#ff958e]" role="alert">{{ getApiErrorMessage(mutationError) }}</p>
+        <p v-if="mutationError" class="mb-4 text-sm text-[#ff958e]" role="alert">
+          {{ getApiErrorMessage(mutationError) }}
+        </p>
         <ul class="divide-y divide-white/15">
           <li v-for="item in items" :key="item.id" class="grid grid-cols-[76px_1fr_auto] gap-4 py-5 sm:grid-cols-[100px_1fr_auto]">
             <RouterLink :to="{ path: `/product/${item.product_id}` }" class="block">
-              <img
-                v-if="item.images[0]"
-                class="aspect-[4/5] w-full object-cover"
-                :src="item.images[0].url"
-                :alt="item.images[0].alt || item.product_name"
-                loading="lazy"
-              />
-              <span v-else class="grid aspect-[4/5] place-items-center bg-[#211f22] text-center text-[10px] text-white/70">No photo yet</span>
+              <img v-if="item.images[0]" class="aspect-4/5 w-full object-cover" :src="item.images[0].url" :alt="item.images[0].alt || item.product_name" loading="lazy" />
+              <span v-else class="grid aspect-4/5 place-items-center bg-[#211f22] text-center text-[10px] text-white/70">No photo yet</span>
             </RouterLink>
             <div class="min-w-0 py-1">
               <h2 class="font-heading text-lg font-bold">
                 <RouterLink class="hover:text-[#ff958e]" :to="{ path: `/product/${item.product_id}` }">{{ item.product_name }}</RouterLink>
               </h2>
-              <p class="mt-1 text-sm text-white/75">{{ item.name }}</p>
+              <p class="mt-1 text-sm text-white/75">
+                {{ item.name }}
+              </p>
               <div class="mt-3 flex items-center gap-2" :aria-label="`Quantity controls for ${item.product_name}`">
                 <button
                   class="grid size-11 place-items-center border border-white/35 text-white hover:border-[#F44336] hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]"
@@ -117,7 +105,9 @@ const mutationError = computed(() => increaseError.value ?? decreaseError.value 
                 <Trash2 :size="16" aria-hidden="true" /> Remove
               </button>
             </div>
-            <p class="pt-1 text-right text-sm font-semibold tabular-nums">{{ formatIDR(Number(item.price) * item.quantity) }}</p>
+            <p class="pt-1 text-right text-sm font-semibold tabular-nums">
+              {{ formatIDR(Number(item.price) * item.quantity) }}
+            </p>
           </li>
         </ul>
       </div>
@@ -128,20 +118,14 @@ const mutationError = computed(() => increaseError.value ?? decreaseError.value 
           <span>Subtotal</span>
           <span class="font-semibold tabular-nums">{{ formatIDR(subtotal) }}</span>
         </div>
-        <p class="mt-3 text-xs leading-5 text-white/70">Shipping and payment details appear at checkout.</p>
-        <button class="mt-6 min-h-12 w-full cursor-not-allowed bg-white/15 px-4 text-sm font-bold text-white/60" type="button" disabled aria-describedby="checkout-status">
-          Checkout
-        </button>
-        <p id="checkout-status" class="mt-2 text-xs leading-5 text-white/70">
-          Checkout is not open yet. Your bag is already saved on the store server, so nothing is lost while you wait.
-        </p>
-        <button
-          class="mt-3 min-h-11 w-full border border-white/40 px-4 text-sm font-bold hover:border-[#F44336] hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]"
-          type="button"
-          @click="clear()"
+        <p class="mt-3 text-xs leading-5 text-white/70">Shipping and payment details are settled on the checkout page.</p>
+        <RouterLink
+          class="mt-6 inline-flex min-h-12 w-full items-center justify-center bg-ember px-4 text-sm font-bold text-white hover:bg-ember-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F44336]"
+          to="/checkout"
         >
-          Clear bag
-        </button>
+          Checkout
+        </RouterLink>
+        <button class="mt-3 min-h-11 w-full border border-white/40 px-4 text-sm font-bold hover:border-[#F44336] hover:text-[#ff958e] focus-visible:outline-2 focus-visible:outline-[#F44336]" type="button" @click="clear()">Clear bag</button>
       </aside>
     </div>
 

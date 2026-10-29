@@ -1,5 +1,10 @@
-import { keepPreviousData, useQuery } from "@tanstack/vue-query";
-import { getAdminOrder, getAdminOrderHistories, getAdminOrders } from "./order.api";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
+import {
+  getAdminOrder,
+  getAdminOrders,
+  updateAdminOrderStatus,
+  type UpdateOrderStatusRequest,
+} from "./order.api";
 import type { AdminOrdersParams } from "./order.types";
 
 export function useAdminOrdersQuery(params: () => AdminOrdersParams) {
@@ -20,11 +25,14 @@ export function useAdminOrderQuery(orderId: () => string | null) {
   }));
 }
 
-export function useAdminOrderHistories(orderId: () => string | null) {
-  return useQuery(() => ({
-    queryKey: ["admin", "orders", orderId(), "histories"] as const,
-    queryFn: () => getAdminOrderHistories(orderId() as string),
-    enabled: !!orderId(),
-    staleTime: 30_000,
-  }));
+export function useUpdateAdminOrderStatusMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ orderId, payload }: { orderId: string; payload: UpdateOrderStatusRequest }) =>
+      updateAdminOrderStatus(orderId, payload),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "orders", variables.orderId] });
+    },
+  });
 }

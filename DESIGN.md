@@ -22,6 +22,8 @@ Gunakan palet **'Bold & Bright'** yang memberikan kontras dinamis:
 - **Background:** `#0F0F11` (Kesan streetwear gelap).
 - **Surface:** `#F8F8F8` (Untuk section clean/basic).
 - **Typography:** `Syne` atau `Clash Display` (Headings/Display) & `Inter` atau `Space Grotesk` (Body).
+- **Typography admin:** `IBM Plex Sans` (teks) & `IBM Plex Mono` (SKU, nomor pesanan, resi). Panel admin bukan alat marketing, jadi tidak memakai huruf display storefront; huruf kerja ini dipilih karena xr tinggi dan digit tegas untuk tabel angka. Diterapkan lewat kelas `admin-scope` di `<body>` saat admin layout aktif, sehingga dialog dan dropdown yang di-portal ikut mewarisi.
+- **Foto admin:** unggahan foto produk dan foto varian memakai `multipart/form-data` ke endpoint terpisah, jadi id produk/varian baru dipakai setelah server mengembalikannya. Daftar foto produk juga memuat foto varian tanpa penanda, jadi foto varian disaring lewat daftar varian agar tidak salah dihapus lewat endpoint foto produk.
 
 ## 4. Backend Data Integration (JSON Mapping)
 

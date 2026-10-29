@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BookmarkCheck } from '@lucide/vue'
+import { BadgeCheck, BookmarkCheck, CircleAlert } from '@lucide/vue'
 import { useAccountProfileQuery } from '@/api/features/account/account.queries'
 import { formatDate } from '@/lib/format'
 
@@ -33,6 +33,11 @@ const { data: profile, isPending, isError, refetch } = useAccountProfileQuery()
       <div>
         <dt class="text-xs font-bold uppercase tracking-[0.12em] text-white/60">Email address</dt>
         <dd class="mt-2 break-all text-base font-semibold">{{ profile.email }}</dd>
+        <dd class="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold" :class="profile.email_verified_at ? 'text-emerald-300' : 'text-amber-300'">
+          <BadgeCheck v-if="profile.email_verified_at" :size="16" aria-hidden="true" />
+          <CircleAlert v-else :size="16" aria-hidden="true" />
+          {{ profile.email_verified_at ? 'Email verified' : 'Email not verified' }}
+        </dd>
       </div>
       <div>
         <dt class="text-xs font-bold uppercase tracking-[0.12em] text-white/60">Phone number</dt>

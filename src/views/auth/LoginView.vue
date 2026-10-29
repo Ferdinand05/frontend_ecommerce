@@ -3,7 +3,10 @@ import { getApiErrorMessage } from "@/api/errors";
 import { useLoginMutation } from "@/api/features/auth/auth.queries";
 import Button from "@/components/ui/button/Button.vue";
 import { reactive } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
+
+const route = useRoute();
+const showVerifyNotice = route.query.verify === "sent";
 
 const form = reactive({
   email: "",
@@ -30,6 +33,7 @@ const onSubmit = () => {
       </RouterLink>
       <h1 id="login-title" class="font-heading text-[clamp(32px,7vw,42px)] font-bold leading-none tracking-[-0.04em]">Take your place.</h1>
       <p class="mb-7 mt-3.5 text-sm leading-6 text-[#625b59]">Sign in to pick up where your style left off.</p>
+      <p v-if="showVerifyNotice" class="mb-5 border-l-2 border-ember pl-3 text-sm leading-6 text-[#544c4c]" role="status">Your account is ready. Check your inbox for the verification link, then sign in.</p>
       <form class="grid gap-2.5" @submit.prevent="onSubmit">
         <label class="text-[13px] font-semibold" for="login-email">Email address</label>
         <input

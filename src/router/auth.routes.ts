@@ -1,6 +1,7 @@
 import LoginView from "@/views/auth/LoginView.vue";
 import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
+import EmailVerificationView from "@/views/auth/EmailVerificationView.vue";
 import AuthLayout from "@/views/layouts/AuthLayout.vue";
 import type { RouteRecordRaw } from "vue-router";
 
@@ -27,6 +28,12 @@ export const authRoutes: RouteRecordRaw[] = [
                 name: 'register',
                 component: RegisterView,
                 meta: { guestOnly: true, title: 'Register' },
+            },
+            {
+                path: '/auth/email-verification/verify',
+                name: 'email-verification',
+                component: EmailVerificationView,
+                meta: { title: 'Verify email' },
             },
         ],
     },

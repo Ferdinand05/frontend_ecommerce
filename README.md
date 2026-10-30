@@ -38,7 +38,7 @@ npm run test:unit
 npm run test:e2e
 npm run build
 ```
-## Backend Repository
-See [`https://github.com/Ferdinand05/backend_ecommerce`](Backend Repository)
-
+## Backend Integrations
+See [`Backend Ecommerce Repository`](https://github.com/Ferdinand05/backend_ecommerce)
+See [`Swagger API Specs`](https://app.swaggerhub.com/apis/FKORYANTO/GO-BACKEND-ECOMMERCE/1.0.0)
 See [`docs/api-docs.yaml`](docs/api-docs.yaml) for the API contract and [`DESIGN.md`](DESIGN.md) for the storefront design direction.

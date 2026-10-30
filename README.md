@@ -38,5 +38,7 @@ npm run test:unit
 npm run test:e2e
 npm run build
 ```
+## Backend Repository
+See [`https://github.com/Ferdinand05/backend_ecommerce`](Backend Repository)
 
 See [`docs/api-docs.yaml`](docs/api-docs.yaml) for the API contract and [`DESIGN.md`](DESIGN.md) for the storefront design direction.
